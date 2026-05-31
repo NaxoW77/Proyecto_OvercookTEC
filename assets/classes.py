@@ -28,7 +28,92 @@ class Player:
     def __init__(self, name="", character=""): # Parámetros de inicialización
         self.name = name if name else "" # Nombre del jugador
         self.character = character if character else "" # Imagen del jugador
-        self.score = 0 # Puntaje
+        self.posX = 0 # Posición en x
+        self.posY = 0 # Posición en y
+        self.direction = "" # Dirección
+        self.size = 0
+        
+    # Método para moverse
+    def move(self, key, canvas):
+        
+        if key == "left":
+            key = "a"
+        elif key == "right":
+            key = "d"
+        elif key == "up":
+            key = "w"
+        elif key == "down":
+            key = "s"
+        
+        dx = 0
+        dy = 0
+
+        if key == "a":
+            relative_x = self.posX - self.size
+            relative_y = self.posY
+            
+            if self.checkCasilla(canvas, relative_x + self.size/2, relative_y + self.size/2) != 0:
+                return [0, 0]
+            
+            dx = -self.size
+            self.posX -= self.size
+
+        elif key == "d":
+            relative_x = self.posX + self.size
+            relative_y = self.posY
+            
+            if self.checkCasilla(canvas, relative_x + self.size/2, relative_y + self.size/2) != 0:
+                return [0, 0]
+            
+            dx = self.size
+            self.posX += self.size
+
+        elif key == "w":
+            relative_x = self.posX
+            relative_y = self.posY - self.size
+            
+            if self.checkCasilla(canvas, relative_x + self.size/2, relative_y + self.size/2) != 0:
+                return [0, 0]
+            
+            dy = -self.size
+            self.posY -= self.size
+
+        elif key == "s":
+            relative_x = self.posX
+            relative_y = self.posY + self.size
+            
+            if self.checkCasilla(canvas, relative_x + self.size/2, relative_y + self.size/2) != 0:
+                return [0, 0]
+            
+            dy = self.size
+            self.posY += self.size
+        
+        return [dx, dy]
+    
+    def checkCasilla(self, canvas, x, y):
+            print(x, y)
+            
+            item = canvas.find_closest(x, y)
+            if isinstance(item, (tuple, list)):
+                item = item[0]
+                
+            fill = canvas.itemcget(item, "fill")
+            print(fill)
+            
+            if fill == "blue":
+                return -1
+            elif fill == "purple":
+                return -1
+            elif fill == "red":
+                return 1
+            elif fill == "green":
+                return 2
+            elif fill == "cyan":
+                return 3
+            elif fill == "yellow":
+                return 4
+            else:
+                return 0
         
         
     # --- Setters y getters
@@ -56,11 +141,13 @@ class Player:
     
 # Se define el modelo de escenario
 class Escenario:
-    def __init__(self, name="", recetas=[], layout=[], tamaño=0, img=""): # Parámetros de inicialización
+    def __init__(self, name="", recetas=[], layout=[], tamaño=0, posChef1=[0,0], posChef2=[0,0], img=""): # Parámetros de inicialización
         self.name = name # Nombre del escenario
         self.recetas = recetas # Recetas disponibles
         self.layout = layout # Mapa
         self.tamaño = tamaño # Tamaño visual
+        self.posChef1 = posChef1 # Posición inicial del chef 1
+        self.posChef2 = posChef2 # Posición inicial del chef 2
         self.img = img # Imagen del escenario
     
 # Se define el modelo de receta
