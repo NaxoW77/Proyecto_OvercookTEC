@@ -20,8 +20,8 @@ style = Style()
 
 # Se define la clase del frame
 class IntroFrame(StyledFrame):
-    def __init__(self, parent, controller):
-        super().__init__(parent, controller, style.colors["default"]) # Se hereda el controlador
+    def __init__(self, parent, controller, root):
+        super().__init__(parent, controller, style.colors["default"], root) # Se hereda el controlador
         
         # --- Banner ---
         
@@ -139,15 +139,15 @@ class IntroFrame(StyledFrame):
         # Botón de jugar
         self.create_button1(
             btn_group, # Ubicación
-            lang.test, # Texto
-            lambda: controller.show_frame("LobbyFrame") # Función
+            "Jugar", # Texto
+            lambda: controller.show_frame("GameFrame") # Función
             ).pack(side="left", padx=5)
         
         # Botón para ir al salón de la fama
         self.create_button1(
             btn_group,
             lang.test,
-            lambda: controller.show_frame("HallOfFameFrame")
+            lambda: controller.show_frame("IntroFrame")
             ).pack(side="right", padx=5)
         
         # --- Botones ---

@@ -54,6 +54,15 @@ class Player:
     def getScore(self):
         return self.score
     
+# Se define el modelo de escenario
+class Escenario:
+    def __init__(self, name="", recetas=[], layout=[], tamaño=0, img=""): # Parámetros de inicialización
+        self.name = name # Nombre del escenario
+        self.recetas = recetas # Recetas disponibles
+        self.layout = layout # Mapa
+        self.tamaño = tamaño # Tamaño visual
+        self.img = img # Imagen del escenario
+    
 # Se define el modelo de receta
 class Receta:
     def __init__(self, name="", type="", ingredients={}, img=""): # Parámetros de inicialización
@@ -68,7 +77,7 @@ class Receta:
 # Se define el modelo de pantalla
 # Este es el modelo que guardará secciones para poder mostrarlas luego
 class StyledFrame(tk.Frame):
-    def __init__(self, parent, controller, bg_color):
+    def __init__(self, parent, controller, bg_color, root):
         super().__init__(parent, bg=bg_color)
         self.controller = controller # Controlador para llamar variables globales
         

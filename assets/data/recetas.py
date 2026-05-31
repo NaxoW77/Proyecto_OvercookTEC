@@ -5,16 +5,15 @@
 # pueden aparecer durante el juego
 
 # Importamos las definiciones de cada objeto
-from assets.classes import Escenario
 from assets.classes import Receta
 
 
 # Creamos una clase que contenga todas las recetas
 
-class PokemonList:
+class RecetaList:
     def __init__(self):
         
-        # Primer pokémon
+        # Primer receta
         self.receta1 = Receta(
             name = "Test",
             type = "Test",
