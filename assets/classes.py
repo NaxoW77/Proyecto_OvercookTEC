@@ -30,27 +30,32 @@ class Player:
         self.character = character if character else "" # Imagen del jugador
         self.posX = 0 # Posición en x
         self.posY = 0 # Posición en y
-        self.direction = "" # Dirección
+        self.direction = "up" # Dirección
         self.size = 0
+        
+    # Método para detectar teclas
+    def keyEvent(self, key, canvas):
+        if key in ["a", "d", "w", "s", "left", "right", "up", "down"]:
+            if key == "left":
+                key = "a"
+            elif key == "right":
+                key = "d"
+            elif key == "up":
+                key = "w"
+            elif key == "down":
+                key = "s"
+        return self.move(key, canvas)
         
     # Método para moverse
     def move(self, key, canvas):
-        
-        if key == "left":
-            key = "a"
-        elif key == "right":
-            key = "d"
-        elif key == "up":
-            key = "w"
-        elif key == "down":
-            key = "s"
-        
         dx = 0
         dy = 0
 
         if key == "a":
             relative_x = self.posX - self.size
             relative_y = self.posY
+            
+            self.direction = "left"
             
             if self.checkCasilla(canvas, relative_x + self.size/2, relative_y + self.size/2) != 0:
                 return [0, 0]
@@ -62,6 +67,8 @@ class Player:
             relative_x = self.posX + self.size
             relative_y = self.posY
             
+            self.direction = "right"
+            
             if self.checkCasilla(canvas, relative_x + self.size/2, relative_y + self.size/2) != 0:
                 return [0, 0]
             
@@ -72,6 +79,8 @@ class Player:
             relative_x = self.posX
             relative_y = self.posY - self.size
             
+            self.direction = "up"
+            
             if self.checkCasilla(canvas, relative_x + self.size/2, relative_y + self.size/2) != 0:
                 return [0, 0]
             
@@ -81,6 +90,8 @@ class Player:
         elif key == "s":
             relative_x = self.posX
             relative_y = self.posY + self.size
+            
+            self.direction = "down"
             
             if self.checkCasilla(canvas, relative_x + self.size/2, relative_y + self.size/2) != 0:
                 return [0, 0]
@@ -150,6 +161,25 @@ class Escenario:
         self.posChef2 = posChef2 # Posición inicial del chef 2
         self.img = img # Imagen del escenario
     
+    
+# Clase de cajas de donde se obtienen ingredientes
+class Caja:
+    def __init__(self, name="", type="", ingredients={}, img=""): # Parámetros de inicialización
+        self.name = name # Nombre de la caja
+        self.type = type # Tipo de la caja
+        self.ingredients = ingredients # Ingredientes de la caja
+        self.img = img # Imagen de la caja
+        
+        
+# Clase de mesa donde se procesan ingredientes
+class Mesa:
+    def __init__(self, name="", type="", ingredients={}, img=""): # Parámetros de inicialización
+        self.name = name # Nombre de la mesa
+        self.type = type # Tipo de la mesa
+        self.ingredients = ingredients # Ingredientes de la mesa
+        self.img = img # Imagen de la mesa
+
+
 # Se define el modelo de receta
 class Receta:
     def __init__(self, name="", type="", ingredients={}, img=""): # Parámetros de inicialización
