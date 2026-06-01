@@ -30,8 +30,8 @@ class Main:
     def __init__(self, root):
         
         # Se instancian los modelos a usar
-        self.chef1 = Player()
-        self.chef2 = Player()
+        self.chef1 = Player("Chef1", "", ["w", "s", "a", "d", "e"])
+        self.chef2 = Player("Chef2", "", ["8", "5", "4", "6", "9"])
         
         # Configuración general de la ventana
         self.root = root

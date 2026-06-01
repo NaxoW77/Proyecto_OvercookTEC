@@ -25,26 +25,41 @@ style = Style()
 
 # Se define el modelo de jugador
 class Player:
-    def __init__(self, name="", character=""): # Parámetros de inicialización
+    def __init__(self, name="", character="", keySet=[]): # Parámetros de inicialización
         self.name = name if name else "" # Nombre del jugador
         self.character = character if character else "" # Imagen del jugador
         self.posX = 0 # Posición en x
         self.posY = 0 # Posición en y
         self.direction = "up" # Dirección
         self.size = 0
+        self.keySet = keySet
         
     # Método para detectar teclas
     def keyEvent(self, key, canvas):
-        if key in ["a", "d", "w", "s", "left", "right", "up", "down"]:
-            if key == "left":
-                key = "a"
-            elif key == "right":
-                key = "d"
-            elif key == "up":
-                key = "w"
-            elif key == "down":
-                key = "s"
-        return self.move(key, canvas)
+        key = key.lower()
+        
+        if key in self.keySet:
+            
+            keyIndex = self.keySet.index(key)
+            if keyIndex < len(self.keySet)-1:
+                if keyIndex == 0:
+                    key = "w"
+                elif keyIndex == 1:
+                    key = "s"
+                elif keyIndex == 2:
+                    key = "a"
+                elif keyIndex == 3:
+                    key = "d"
+                return self.move(key, canvas)
+        
+            else:
+                if keyIndex == 4:
+                    key = "e"
+                return self.act(key, canvas)
+        
+    # Método para interactuar
+    def act(self, key, canvas):
+        return "A"
         
     # Método para moverse
     def move(self, key, canvas):
