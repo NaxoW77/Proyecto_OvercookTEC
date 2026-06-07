@@ -34,6 +34,8 @@ class Player:
         self.size = 0
         self.keySet = keySet
         
+        self.item = None
+        
     # Método para detectar teclas
     def keyEvent(self, key, canvas):
         key = key.lower()
@@ -59,7 +61,14 @@ class Player:
         
     # Método para interactuar
     def act(self, key, canvas):
-        return "A"
+        if self.direction == "up":
+            return self.checkCasilla(canvas, self.posX + self.size/2, self.posY - self.size/2)
+        elif self.direction == "down":
+            return self.checkCasilla(canvas, self.posX + self.size/2, self.posY + self.size/2)
+        elif self.direction == "left":
+            return self.checkCasilla(canvas, self.posX - self.size/2, self.posY + self.size/2)
+        elif self.direction == "right":
+            return self.checkCasilla(canvas, self.posX + self.size/2, self.posY + self.size/2)
         
     # Método para moverse
     def move(self, key, canvas):
@@ -165,35 +174,51 @@ class Player:
     def getScore(self):
         return self.score
     
+    # Objetos
+    def setItem(self, item):
+        print("ITEM:", item)
+        self.item = item
+        
+    def getItems(self):
+        return self.item
+    
 # Se define el modelo de escenario
 class Escenario:
-    def __init__(self, name="", recetas=[], layout=[], tamaño=0, posChef1=[0,0], posChef2=[0,0], img=""): # Parámetros de inicialización
+    def __init__(self, name="", recetas=[], layout=[], tamaño=0, posChef1=[0,0], posChef2=[0,0], estacion3=None, img=""): # Parámetros de inicialización
         self.name = name # Nombre del escenario
         self.recetas = recetas # Recetas disponibles
         self.layout = layout # Mapa
         self.tamaño = tamaño # Tamaño visual
         self.posChef1 = posChef1 # Posición inicial del chef 1
         self.posChef2 = posChef2 # Posición inicial del chef 2
+        self.estacion3 = estacion3 # Estación 3
         self.img = img # Imagen del escenario
     
     
-# Clase de cajas de donde se obtienen ingredientes
+# Clase de Caja de donde se obtienen ingredientes
 class Caja:
-    def __init__(self, name="", type="", ingredients={}, img=""): # Parámetros de inicialización
+    def __init__(self, name="", item=None, img=""): # Parámetros de inicialización
         self.name = name # Nombre de la caja
-        self.type = type # Tipo de la caja
-        self.ingredients = ingredients # Ingredientes de la caja
+        self.item = item # Objeto de la caja
         self.img = img # Imagen de la caja
         
+    def obtener(self):
+        return self.item
         
-# Clase de mesa donde se procesan ingredientes
-class Mesa:
-    def __init__(self, name="", type="", ingredients={}, img=""): # Parámetros de inicialización
-        self.name = name # Nombre de la mesa
-        self.type = type # Tipo de la mesa
-        self.ingredients = ingredients # Ingredientes de la mesa
-        self.img = img # Imagen de la mesa
+# Clase de Estacion donde se procesan ingredientes
+class Estacion:
+    def __init__(self, name="", type="", ingredients={}, result={}, img=""): # Parámetros de inicialización
+        self.name = name # Nombre de la estacion
+        self.type = type # Tipo de la estacion
+        self.ingredients = ingredients # Ingredientes de la estacion
+        self.result = result # Resultado de la estacion
+        self.img = img # Imagen de la estacion
 
+    def procesar(self, ingredients):
+        if self.ingredients == ingredients:
+            return self.result
+        else:
+            return None
 
 # Se define el modelo de receta
 class Receta:
@@ -205,6 +230,13 @@ class Receta:
         
     def test(self):
         print(self.name, self.type, self.ingredients, self.img)
+        
+
+class Item:
+    def __init__(self, name="", count=0, img=""): # Parámetros de inicialización
+        self.name = name # Nombre del item
+        self.count = count # Cantidad del item
+        self.img = img
 
 # Se define el modelo de pantalla
 # Este es el modelo que guardará secciones para poder mostrarlas luego

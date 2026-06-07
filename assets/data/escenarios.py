@@ -6,6 +6,9 @@
 
 # Importamos las definiciones de cada objeto
 from assets.classes import Escenario
+from assets.classes import Caja
+from assets.classes import Estacion
+from assets.classes import Item
 from assets.data import recetas
 resetas = recetas.RecetaList()
 
@@ -48,9 +51,13 @@ class EscenarioList:
                 [1, 1, 1, 1, 2, 2, 2, 2, 1, 1, 1, 1]
             ],
             
+            # Tamaños y posiciones
             tamaño = 50,
             posChef1 = [4, 9],
             posChef2 = [7, 9],
+            
+            # Tipos de estaciones
+            estacion3 = Caja("Tomates", Item("Tomate", 1, "assets/img/tomate.png")),
         )
         
         

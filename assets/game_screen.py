@@ -106,6 +106,12 @@ class GameFrame(StyledFrame):
             controller.chef1.posY + size/2 + size/8,
             fill="red")
         
+        chef1_item = None
+        if controller.chef1.item:
+            if isinstance(controller.chef1.item.img, str):
+                controller.chef1.item.img = tk.PhotoImage(file=controller.chef1.item.img)
+            chef1_item = canvas.create_image(controller.chef1.posX, controller.chef1.posY, image=controller.chef1.item.img, anchor="center")
+        
         # Jugador 2
         controller.chef2.posX = escenario.posChef2[0] * size
         controller.chef2.posY = escenario.posChef2[1] * size
@@ -119,6 +125,11 @@ class GameFrame(StyledFrame):
             controller.chef2.posX + size /2 + size/8, 
             controller.chef2.posY + size/2 + size/8,
             fill="red")
+        
+        chef2_item = canvas.create_image(controller.chef2.posX, controller.chef2.posY, image=controller.chef2.item, anchor="center")
+
+        
+        # --- Body ---
 
         def mover(event):
             key = event.keysym
@@ -129,11 +140,13 @@ class GameFrame(StyledFrame):
                 chef = controller.chef1
                 chef_pos = chef1_pos
                 chef_cursor = chef1_cursor
+                chef_item = chef1_item
             
             elif key in controller.chef2.keySet:
                 chef = controller.chef2
                 chef_pos = chef2_pos
                 chef_cursor = chef2_cursor
+                chef_item = chef2_item
             
             else:
                 return
@@ -142,6 +155,7 @@ class GameFrame(StyledFrame):
                 movement = chef.keyEvent(key, canvas)
                 if movement != [0,0]:
                     canvas.move(chef_pos, movement[0], movement[1])
+                    canvas.coords(chef_item, chef.posX, chef.posY)
                     
                 canvas.coords (chef_cursor,
                                 chef.posX+size/2-size/8,chef.posY+size/2-size/8, chef.posX + size /2 + size/8, chef.posY + size/2 + size/8)
@@ -156,6 +170,14 @@ class GameFrame(StyledFrame):
                     canvas.move(chef_cursor, 0, size/2 - size/8)
             else:
                 act = chef.keyEvent(key, canvas)
+                print("Accion: ", act)
+                if act == 3:
+                    print("eSCENARIO:", escenario.estacion3)
+                    chef.setItem(escenario.estacion3.item)
+                    if isinstance(chef.item.img, str):
+                        chef.item.img = tk.PhotoImage(file=chef.item.img)
+                    chef_item = canvas.create_image(chef.posX, chef.posY, image=chef.item.img, anchor="center")
+                    
                 
                 direction = chef.direction
                 
