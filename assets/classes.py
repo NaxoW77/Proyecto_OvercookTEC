@@ -61,14 +61,24 @@ class Player:
         
     # Método para interactuar
     def act(self, key, canvas):
+        
         if self.direction == "up":
-            return self.checkCasilla(canvas, self.posX + self.size/2, self.posY - self.size/2)
+            relative_x = self.posX
+            relative_y = self.posY - self.size
+            
         elif self.direction == "down":
-            return self.checkCasilla(canvas, self.posX + self.size/2, self.posY + self.size/2)
+            relative_x = self.posX
+            relative_y = self.posY + self.size
+        
         elif self.direction == "left":
-            return self.checkCasilla(canvas, self.posX - self.size/2, self.posY + self.size/2)
+            relative_x = self.posX - self.size
+            relative_y = self.posY
+        
         elif self.direction == "right":
-            return self.checkCasilla(canvas, self.posX + self.size/2, self.posY + self.size/2)
+            relative_x = self.posX + self.size
+            relative_y = self.posY
+        
+        return self.checkCasilla(canvas, relative_x+self.size/2, relative_y+self.size/2)
         
     # Método para moverse
     def move(self, key, canvas):
@@ -129,26 +139,34 @@ class Player:
             item = canvas.find_closest(x, y)
             if isinstance(item, (tuple, list)):
                 item = item[0]
-            
-            try:
-                fill = canvas.itemcget(item, "fill")
-            except:
-                return -1
+        
+            fill = canvas.itemcget(item, "fill")
+            print(fill)
             
             if fill == "blue":
                 return -1
             elif fill == "purple":
                 return -1
+            elif fill == "black":
+                return 0
             elif fill == "red":
                 return 1
             elif fill == "green":
                 return 2
-            elif fill == "cyan":
+            elif fill == "#916223":
                 return 3
-            elif fill == "yellow":
+            elif fill == "#916224":
                 return 4
-            elif fill == "black":
-                return 0
+            elif fill == "#916225":
+                return 5
+            elif fill == "#916226":
+                return 6
+            elif fill == "#d8d8d7":
+                return 7
+            elif fill == "#d8d8d8":
+                return 8
+            elif fill == "#d8d8d9":
+                return 9
             else:
                 return -1
         

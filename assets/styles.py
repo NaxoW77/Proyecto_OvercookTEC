@@ -24,7 +24,9 @@ class Style:
         # Colores
         self.colors = {
             "default": "#ffffff",
+            "text": "#333333",
             "black": "#000000",
             "main": "#dbd339",
+            "game": "#db9a39",
             "exit": "#ff0000",
         }

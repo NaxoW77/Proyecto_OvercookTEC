@@ -141,6 +141,9 @@ class Main:
         self.main_footer = tk.Frame(root, bg=style.colors["main"], height=60)
         self.main_footer.pack(fill="x")
         
+        self.main_footer_banner = tk.Frame(self.main_footer, bg=style.colors["game"],height=10)
+        self.main_footer_banner.pack(fill="x")
+        
         # Copyright
         self.footer_copyright = tk.Label(
             self.main_footer,

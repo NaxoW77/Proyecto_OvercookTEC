@@ -29,11 +29,14 @@ class GameFrame(StyledFrame):
     def __init__(self, parent, controller, root):
         super().__init__(parent, controller, style.colors["default"], root) # Se hereda el controlador
         
+        # --- Variables de control ---
+        self.debug = False
+        
         # --- Banner ---
         
         banner = tk.Frame(
             self,
-            bg=style.colors["main"],
+            bg=style.colors["game"],
             height=10
             )
         banner.pack(fill="x")
@@ -49,10 +52,54 @@ class GameFrame(StyledFrame):
             self, # Ubicación
             bg=style.colors["default"] # Color
         )
-        main_frame.pack(fill="both", expand=True, pady=20)
+        main_frame.pack(fill="both", expand=True, pady=0)
+
+        # --- Body izquierdo ---
+        left = tk.Frame(main_frame, bg=style.colors["game"], width=500)
         
-        center = tk.Frame(main_frame, bg=style.colors["default"])
-        center.pack(fill="both", expand=True)
+        # Ancho del panel izquierdo
+        left.pack(side="left", fill="both", padx=0)
+
+        # Contenedor para los pedidos
+        floating_frame = tk.Frame(left, bg=style.colors["default"], bd=2, relief="raised")
+        floating_frame.pack(padx=8, pady=12)
+
+        left_title = tk.Label(floating_frame, text="Pedidos", bg=style.colors["default"], fg=style.colors["main"], font=("Helvetica", 14, "bold"))
+        left_title.pack(pady=(12, 6))
+
+        left_text = tk.Label(floating_frame, text="[...].", bg=style.colors["default"], justify="left", wraplength=400)
+        left_text.pack(padx=10)
+
+        # Tabla para los pedidos
+        table_frame = tk.Frame(floating_frame, bg=style.colors["default"])
+        table_frame.pack(padx=10, pady=12)
+
+        card = tk.Frame(table_frame, bg=style.colors["default"], bd=2, relief="groove")
+        card.pack()
+
+        # Imagen del elemento
+        self.left_item_img = tk.PhotoImage(file="assets/img/hamburguesa.png").subsample(6,6)
+        img_label = tk.Label(card, image=self.left_item_img, bg=style.colors["default"])
+        img_label.pack(side="left", padx=6, pady=6)
+
+        # Contenido del pedido
+        item_content = tk.Frame(card, bg=style.colors["default"])
+        item_content.pack(side="left", padx=6, pady=6)
+
+        item_title = tk.Label(item_content, text="Hamburguesa", bg=style.colors["default"], fg=style.colors["text"], font=("Helvetica", 12, "bold"))
+        item_title.pack(anchor="nw")
+
+        item_list = tk.Frame(item_content, bg=style.colors["default"])
+        
+        item_list.pack(anchor="nw", pady=(4,0))
+        tk.Label(item_list, text="• Pan", bg=style.colors["default"], fg=style.colors["text"]).pack(anchor="w")
+        tk.Label(item_list, text="• Carne", bg=style.colors["default"], fg=style.colors["text"]).pack(anchor="w")
+        tk.Label(item_list, text="• Lechuga", bg=style.colors["default"], fg=style.colors["text"]).pack(anchor="w")
+        tk.Label(item_list, text="• Queso", bg=style.colors["default"], fg=style.colors["text"]).pack(anchor="w")
+
+        # --- Body derecho ---
+        right = tk.Frame(main_frame, bg=style.colors["default"])
+        right.pack(side="left", fill="both", expand=True)
         
         # Se carga el escenario 1
         escenario = escenarios.getEscenario("E1")
@@ -60,7 +107,7 @@ class GameFrame(StyledFrame):
         self.bg_image = tk.PhotoImage(file=escenario.fondo)
 
         # Fondo de la pantalla
-        self.bg_label = tk.Label(center, image=self.bg_image)
+        self.bg_label = tk.Label(right, image=self.bg_image)
         self.bg_label.place(x=0, y=0, relwidth=1, relheight=1)
         
         rows = len(escenario.layout)
@@ -68,18 +115,18 @@ class GameFrame(StyledFrame):
         size = escenario.tamaño
 
         # Creamos el Canvas de fondo (grid y colisiones)
-        canvas_bg = tk.Canvas(center, width=cols*size, height=rows*size, bg="white", highlightthickness=0)
-        canvas_bg.pack(expand=True)
+        self.canvas_bg = tk.Canvas(right, width=cols*size, height=rows*size, bg="white", highlightthickness=0)
+        self.canvas_bg.pack(expand=True)
 
         # Creamos un Canvas superior para imágenes y elementos dinámicos
-        canvas_fg = tk.Canvas(center, width=cols*size, height=rows*size, bg=canvas_bg['bg'], bd=0, highlightthickness=0)
-        canvas_fg.place(in_=canvas_bg, x=0, y=0)
+        self.canvas_fg = tk.Canvas(right, width=cols*size, height=rows*size, bg=self.canvas_bg['bg'], bd=0, highlightthickness=0)
+        self.canvas_fg.place(in_=self.canvas_bg, x=0, y=0)
 
         # Forzar el fondo por debajo de los canvas
-        self.bg_label.lower(canvas_bg)
+        self.bg_label.lower(self.canvas_bg)
         
         # Modo Debug
-        #canvas_fg.place_forget()
+        #self.canvas_fg.place_forget()
 
         # Dibujar el Grid en el Canvas
         for r in range(0, len(escenario.layout)):
@@ -90,8 +137,8 @@ class GameFrame(StyledFrame):
                 y2 = y1 + size
                 
                 # Mantener referencias a las imágenes de bloque para evitar borrarlas
-                if not hasattr(canvas_fg, 'images'):
-                    canvas_fg.images = []
+                if not hasattr(self.canvas_fg, 'images'):
+                    self.canvas_fg.images = []
 
                 block_img = tk.PhotoImage(file=escenario.estaciones[0].img).subsample(9,9)
                 tipo = "black"
@@ -114,19 +161,35 @@ class GameFrame(StyledFrame):
                     block_img = tk.PhotoImage(file="assets/img/plato.png").subsample(5,5)
                     
                 elif obj >= 3 and obj <= 6:
-                    tipo = "brown"
+                    
+                    if obj == 3:
+                        tipo = "#916223"
+                    elif obj == 4:
+                        tipo = "#916224"
+                    elif obj == 5:
+                        tipo = "#916225"
+                    elif obj == 6:
+                        tipo = "#916226"
+                        
                     block_img = tk.PhotoImage(file=escenario.cajas[obj-3].item.img).subsample(6,6)
                     
                 elif obj == 7 or obj == 8 or obj == 9:
-                    tipo = "gray"
+                    
+                    if obj == 7:
+                        tipo = "#d8d8d7"
+                    elif obj == 8:
+                        tipo = "#d8d8d8"
+                    elif obj == 9:
+                        tipo = "#d8d8d9"                    
+                    
                     block_img = tk.PhotoImage(file=escenario.estaciones[obj-7].img).subsample(5,5)
                     
-                canvas_bg.create_rectangle(x1, y1, x2, y2, outline="black", fill=tipo)
+                self.canvas_bg.create_rectangle(x1, y1, x2, y2, outline="black", fill=tipo)
     
-                canvas_fg.create_rectangle(x1, y1, x2, y2, outline="black", fill=tipo)
+                self.canvas_fg.create_rectangle(x1, y1, x2, y2, outline="black", fill=tipo)
                 
-                canvas_fg.images.append(block_img)
-                canvas_fg.create_image(x1+size/2, y1+size/2, anchor="center", image=canvas_fg.images[-1])
+                self.canvas_fg.images.append(block_img)
+                self.canvas_fg.create_image(x1+size/2, y1+size/2, anchor="center", image=self.canvas_fg.images[-1])
                 
 
 
@@ -138,7 +201,7 @@ class GameFrame(StyledFrame):
         controller.chef1.size = size
 
         # Cajas de colisión (Canvas de fondo)
-        chef1_pos = canvas_bg.create_rectangle(
+        chef1_pos = self.canvas_bg.create_rectangle(
             controller.chef1.posX,
             controller.chef1.posY,
             controller.chef1.posX + size,
@@ -147,11 +210,11 @@ class GameFrame(StyledFrame):
 
         # Avatar (Canvas Superior)
         chef1_img = tk.PhotoImage(file="assets/img/chef1.png").subsample(6,6)
-        canvas_fg.chef1_img = chef1_img
-        chef1_avatar = canvas_fg.create_image(controller.chef1.posX, controller.chef1.posY, anchor="nw", image=chef1_img)
+        self.canvas_fg.chef1_img = chef1_img
+        chef1_avatar = self.canvas_fg.create_image(controller.chef1.posX, controller.chef1.posY, anchor="nw", image=chef1_img)
 
         # Cursor (Canvas inferior)
-        chef1_cursor = canvas_bg.create_rectangle(
+        chef1_cursor = self.canvas_bg.create_rectangle(
             controller.chef1.posX+size/2-size/8,
             controller.chef1.posY+size/2-size/8,
             controller.chef1.posX + size /2 + size/8,
@@ -159,9 +222,9 @@ class GameFrame(StyledFrame):
             fill="red")
 
         
-        img1 = tk.PhotoImage(file="assets/img/tomate.png").subsample(8,8)
-        canvas_fg.img1 = img1
-        chef1_item = canvas_fg.create_image(controller.chef1.posX-size/4, controller.chef1.posY-size/4, anchor="nw", image=img1)
+        img_item1 = tk.PhotoImage(file="assets/img/plato.png").subsample(8,8)
+        self.canvas_fg.img1 = img_item1
+        chef1_item = self.canvas_fg.create_image(controller.chef1.posX-size/4, controller.chef1.posY-size/4, anchor="nw", image=img_item1)
         
         # Jugador 2
         controller.chef2.posX = escenario.posChef2[0] * size
@@ -169,15 +232,15 @@ class GameFrame(StyledFrame):
         controller.chef2.size = size
 
         # Cajas de colisión (Canvas de fondo)
-        chef2_pos = canvas_bg.create_rectangle(controller.chef2.posX, controller.chef2.posY, controller.chef2.posX + size, controller.chef2.posY + size, fill="purple")
+        chef2_pos = self.canvas_bg.create_rectangle(controller.chef2.posX, controller.chef2.posY, controller.chef2.posX + size, controller.chef2.posY + size, fill="purple")
         
         # Avatar (Canvas Superior)
         chef2_img = tk.PhotoImage(file="assets/img/chef2.png").subsample(6,6)
-        canvas_fg.chef2_img = chef2_img
-        chef2_avatar = canvas_fg.create_image(controller.chef2.posX, controller.chef2.posY, anchor="nw", image=chef2_img)
+        self.canvas_fg.chef2_img = chef2_img
+        chef2_avatar = self.canvas_fg.create_image(controller.chef2.posX, controller.chef2.posY, anchor="nw", image=chef2_img)
 
         # Cursor (Canvas inferior)
-        chef2_cursor = canvas_bg.create_rectangle(
+        chef2_cursor = self.canvas_bg.create_rectangle(
             controller.chef2.posX+size/2-size/8,
             controller.chef2.posY+size/2-size/8,
             controller.chef2.posX + size /2 + size/8,
@@ -185,15 +248,23 @@ class GameFrame(StyledFrame):
             fill="red")
 
         # Item (Canvas Superior)
-        img2 = tk.PhotoImage(file="assets/img/lechuga.png").subsample(8,8)
-        canvas_fg.img2 = img2
-        chef2_item = canvas_fg.create_image(controller.chef2.posX-size/4, controller.chef2.posY-size/4, anchor="nw", image=img2)
-
-        
-        # --- Body ---
+        img_item2 = tk.PhotoImage(file="assets/img/plato.png").subsample(8,8)
+        self.canvas_fg.img2 = img_item2
+        chef2_item = self.canvas_fg.create_image(controller.chef2.posX-size/4, controller.chef2.posY-size/4, anchor="nw", image=img_item2)
 
         def mover(event):
             key = event.keysym
+            
+            if key == "Escape":
+                root.destroy()
+                
+            if key == "p":
+                if self.debug == False:
+                    self.canvas_fg.place_forget()
+                    self.debug = True
+                else:
+                    self.canvas_fg.place(relx=0.5, rely=0.5, anchor="center")
+                    self.debug = False
             
             if key in controller.chef1.keySet:
                 chef = controller.chef1
@@ -213,67 +284,66 @@ class GameFrame(StyledFrame):
                 return
             
             if key in chef.keySet[:-1]:
-                movement = chef.keyEvent(key, canvas_bg)
+                movement = chef.keyEvent(key, self.canvas_bg)
                 if movement != [0,0]:
-                    canvas_bg.move(chef_pos, movement[0], movement[1])
+                    self.canvas_bg.move(chef_pos, movement[0], movement[1])
                     
-                    canvas_fg.move(chef_avatar, movement[0], movement[1])
-                    canvas_fg.move(chef_item, movement[0], movement[1])
-                    canvas_bg.move(chef_cursor, movement[0], movement[1])
+                    self.canvas_fg.move(chef_avatar, movement[0], movement[1])
+                    self.canvas_fg.move(chef_item, movement[0], movement[1])
+                    self.canvas_bg.move(chef_cursor, movement[0], movement[1])
 
                 # Asegurar las coordenadas absolutas del cursor en el canvas superior
-                canvas_bg.coords(chef_cursor,
+                self.canvas_bg.coords(chef_cursor,
                                 chef.posX+size/2-size/8,chef.posY+size/2-size/8, chef.posX + size /2 + size/8, chef.posY + size/2 + size/8)
                 
                 if chef.direction == "left":
-                    canvas_bg.move(chef_cursor, - size/2 + size/8, 0)
+                    self.canvas_bg.move(chef_cursor, - size/2 + size/8, 0)
                 elif chef.direction == "right":
-                    canvas_bg.move(chef_cursor, size/2 - size/8, 0)
+                    self.canvas_bg.move(chef_cursor, size/2 - size/8, 0)
                 elif chef.direction == "up":
-                    canvas_bg.move(chef_cursor, 0, - size/2 + size/8)
+                    self.canvas_bg.move(chef_cursor, 0, - size/2 + size/8)
                 elif chef.direction == "down":
-                    canvas_bg.move(chef_cursor, 0, size/2 - size/8)
-            else:
+                    self.canvas_bg.move(chef_cursor, 0, size/2 - size/8)
+                    
+            elif key in chef.keySet[-1]:
+                
+                act = chef.keyEvent(key, self.canvas_bg)
                 
                 # Animación del cursor
                 direction = chef.direction
 
                 if direction == "left":
-                    canvas_bg.move(chef_cursor,- size/2, 0)
+                    self.canvas_bg.move(chef_cursor,- size/2, 0)
                     self.after(20, lambda: 
-                        canvas_bg.move(chef_cursor, +size/2, 0)
+                        self.canvas_bg.move(chef_cursor, +size/2, 0)
                         )
                 
                 elif direction == "right":
-                    canvas_bg.move(chef_cursor, size/2, 0)
+                    self.canvas_bg.move(chef_cursor, size/2, 0)
                     self.after(20, lambda: 
-                        canvas_bg.move(chef_cursor, -size/2, 0)
+                        self.canvas_bg.move(chef_cursor, -size/2, 0)
                         )
                 elif direction == "up":
-                    canvas_bg.move(chef_cursor, 0, - size/2)
+                    self.canvas_bg.move(chef_cursor, 0, - size/2)
                     self.after(20, lambda: 
-                        canvas_bg.move(chef_cursor, 0, +size/2)
+                        self.canvas_bg.move(chef_cursor, 0, +size/2)
                         )
                 elif direction == "down":
-                    canvas_bg.move(chef_cursor, 0, size/2)
+                    self.canvas_bg.move(chef_cursor, 0, size/2)
                     self.after(20, lambda: 
-                        canvas_bg.move(chef_cursor, 0, -size/2)
+                        self.canvas_bg.move(chef_cursor, 0, -size/2)
                         )
-                act = chef.keyEvent(key, canvas_bg)
-                
-                print("ACCCC", act)
+
                 # Se interactuó con una caja
                 if act >= 3 and act <= 6:
                     chef.setItem(escenario.cajas[act-3].item)
                     
-                    # Cargar la imagen del item y actualizar el elemento en el canvas superior
-                    chef.item.img = tk.PhotoImage(file=chef.item.img)
-                    if chef is controller.chef1:
-                        canvas_fg.img1 = chef.item.img
-                        canvas_fg.itemconfig(chef1_item, image=canvas_fg.img1)
-                    else:
-                        canvas_fg.img2 = chef.item.img
-                        canvas_fg.itemconfig(chef2_item, image=canvas_fg.img2)
+                    print("ACCC", chef.item.img)
+                    
+                    chef_item_img = tk.PhotoImage(file=chef.item.img).subsample(5,5)
+                    
+                    self.canvas_fg.itemconfig(chef_item, image=chef_item_img)
+                    
                 
                 # Se interactuó con una estación
                 if act >= 7 and act <= 9:

@@ -27,7 +27,7 @@ class IntroFrame(StyledFrame):
         
         banner = tk.Frame(
             self,
-            bg=style.colors["main"],
+            bg=style.colors["game"],
             height=10
             )
         banner.pack(fill="x")
