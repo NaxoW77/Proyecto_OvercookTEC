@@ -221,9 +221,9 @@ class GameFrame(StyledFrame):
             controller.chef1.posY + size/2 + size/8,
             fill="red")
 
-        
+        # Item (Canvas superior)
         img_item1 = tk.PhotoImage(file="assets/img/plato.png").subsample(8,8)
-        self.canvas_fg.img1 = img_item1
+        self.canvas_fg.img_item1 = img_item1
         chef1_item = self.canvas_fg.create_image(controller.chef1.posX-size/4, controller.chef1.posY-size/4, anchor="nw", image=img_item1)
         
         # Jugador 2
@@ -234,7 +234,7 @@ class GameFrame(StyledFrame):
         # Cajas de colisión (Canvas de fondo)
         chef2_pos = self.canvas_bg.create_rectangle(controller.chef2.posX, controller.chef2.posY, controller.chef2.posX + size, controller.chef2.posY + size, fill="purple")
         
-        # Avatar (Canvas Superior)
+        # Avatar (Canvas superior)
         chef2_img = tk.PhotoImage(file="assets/img/chef2.png").subsample(6,6)
         self.canvas_fg.chef2_img = chef2_img
         chef2_avatar = self.canvas_fg.create_image(controller.chef2.posX, controller.chef2.posY, anchor="nw", image=chef2_img)
@@ -247,9 +247,9 @@ class GameFrame(StyledFrame):
             controller.chef2.posY + size/2 + size/8,
             fill="red")
 
-        # Item (Canvas Superior)
+        # Item (Canvas superior)
         img_item2 = tk.PhotoImage(file="assets/img/plato.png").subsample(8,8)
-        self.canvas_fg.img2 = img_item2
+        self.canvas_fg.img_item2 = img_item2
         chef2_item = self.canvas_fg.create_image(controller.chef2.posX-size/4, controller.chef2.posY-size/4, anchor="nw", image=img_item2)
 
         def mover(event):
@@ -338,11 +338,13 @@ class GameFrame(StyledFrame):
                 if act >= 3 and act <= 6:
                     chef.setItem(escenario.cajas[act-3].item)
                     
-                    print("ACCC", chef.item.img)
+                    item_img = tk.PhotoImage(file=chef.item.img).subsample(8,8)
+                    if chef is controller.chef1:
+                        self.canvas_fg.img1 = item_img
+                    else:
+                        self.canvas_fg.img2 = item_img
                     
-                    chef_item_img = tk.PhotoImage(file=chef.item.img).subsample(5,5)
-                    
-                    self.canvas_fg.itemconfig(chef_item, image=chef_item_img)
+                    self.canvas_fg.itemconfig(chef_item, image=item_img)
                     
                 
                 # Se interactuó con una estación
@@ -356,5 +358,6 @@ class GameFrame(StyledFrame):
         root.bind("<Key>", mover)
         
         # --- Body ---
+        
         
         
