@@ -125,15 +125,15 @@ class Player:
         
         return [dx, dy]
     
-    def checkCasilla(self, canvas, x, y):
-            print(x, y)
-            
+    def checkCasilla(self, canvas, x, y):            
             item = canvas.find_closest(x, y)
             if isinstance(item, (tuple, list)):
                 item = item[0]
-                
-            fill = canvas.itemcget(item, "fill")
-            print(fill)
+            
+            try:
+                fill = canvas.itemcget(item, "fill")
+            except:
+                return -1
             
             if fill == "blue":
                 return -1
@@ -147,8 +147,10 @@ class Player:
                 return 3
             elif fill == "yellow":
                 return 4
-            else:
+            elif fill == "black":
                 return 0
+            else:
+                return -1
         
         
     # --- Setters y getters
@@ -176,7 +178,7 @@ class Player:
     
     # Objetos
     def setItem(self, item):
-        print("ITEM:", item)
+        print("ITEM:", item.name)
         self.item = item
         
     def getItems(self):
@@ -184,23 +186,45 @@ class Player:
     
 # Se define el modelo de escenario
 class Escenario:
-    def __init__(self, name="", recetas=[], layout=[], tamaño=0, posChef1=[0,0], posChef2=[0,0], estacion3=None, img=""): # Parámetros de inicialización
+    def __init__( # Parámetros de inicialización
+        self, name="",
+        recetas=[],
+        layout=[],
+        tamaño=0,
+        posChef1=[0,0],
+        posChef2=[0,0],
+        caja3=None,
+        caja4=None,
+        caja5=None,
+        caja6=None,
+        estacion7=None,
+        estacion8=None,
+        estacion9=None,
+        fondo=""):
+        
         self.name = name # Nombre del escenario
         self.recetas = recetas # Recetas disponibles
         self.layout = layout # Mapa
         self.tamaño = tamaño # Tamaño visual
         self.posChef1 = posChef1 # Posición inicial del chef 1
         self.posChef2 = posChef2 # Posición inicial del chef 2
-        self.estacion3 = estacion3 # Estación 3
-        self.img = img # Imagen del escenario
+        self.caja3 = caja3 # Estación 3
+        self.caja4 = caja4 # Estación 4
+        self.caja5 = caja5 # Estación 5
+        self.caja6 = caja6 # Estación 6
+        self.estacion7 = estacion7 # Estación 7
+        self.estacion8 = estacion8 # Estación 8
+        self.estacion9 = estacion9 # Estación 9
+        self.cajas = [caja3, caja4, caja5, caja6]
+        self.estaciones = [estacion7, estacion8, estacion9]
+        self.fondo = fondo # Imagen del escenario
     
     
 # Clase de Caja de donde se obtienen ingredientes
 class Caja:
-    def __init__(self, name="", item=None, img=""): # Parámetros de inicialización
+    def __init__(self, name="", item=None): # Parámetros de inicialización
         self.name = name # Nombre de la caja
         self.item = item # Objeto de la caja
-        self.img = img # Imagen de la caja
         
     def obtener(self):
         return self.item
@@ -227,9 +251,6 @@ class Receta:
         self.type = type # Tipo de la receta
         self.ingredients = ingredients # Ingredientes de la receta
         self.img = img # Imagen de la receta
-        
-    def test(self):
-        print(self.name, self.type, self.ingredients, self.img)
         
 
 class Item:

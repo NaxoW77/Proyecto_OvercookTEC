@@ -38,16 +38,16 @@ class EscenarioList:
             # 7 = Estación 2
             layout = [
                 [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-                [1, 3, 3, 4, 4, 5, 5, 4, 4, 3, 3, 1],
+                [1, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 1],
                 [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
                 [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
                 [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
                 [1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1],
                 [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
                 [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-                [1, 6, 6, 6, 0, 0, 0, 0, 7, 7, 7, 1],
+                [1, 7, 7, 7, 0, 0, 0, 0, 8, 8, 8, 1],
                 [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-                [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+                [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 1],
                 [1, 1, 1, 1, 2, 2, 2, 2, 1, 1, 1, 1]
             ],
             
@@ -57,13 +57,28 @@ class EscenarioList:
             posChef2 = [7, 9],
             
             # Tipos de estaciones
-            estacion3 = Caja("Tomates", Item("Tomate", 1, "assets/img/tomate.png")),
+            caja3 = Caja("Carnes", Item("Carne cruda", 1, "assets/img/carne_cruda.png")),
+            caja4 = Caja("Lechugas", Item("Lechuga", 1, "assets/img/lechuga.png")),
+            caja5 = Caja("Panes", Item("Pan", 1, "assets/img/pan.png")),
+            caja6 = Caja("Quesos", Item("Queso", 1, "assets/img/queso.png")),
+            
+            estacion7 = Estacion("Tabla", "Pica", {}, {}, "assets/img/tabla.png"),
+            estacion8 = Estacion("Cocina", "Cocina", {}, {}, "assets/img/cocina.png"),
+            estacion9 = Estacion("Basurero", "Tira", {}, {}, "assets/img/basurero.png"),
+            
+            fondo="assets/img/escenario1.png"
         )
+        
+        self.escenario2 = Escenario()
+        
+        self.escenario3 = Escenario()
         
         
         # Lista de escenarios para fácil acceso
         self.list = [
-            self.escenario1
+            self.escenario1,
+            self.escenario2,
+            self.escenario3
             ]
         
     
