@@ -261,6 +261,7 @@ class GameFrame(StyledFrame):
                         )
                 act = chef.keyEvent(key, canvas_bg)
                 
+                print("ACCCC", act)
                 # Se interactuó con una caja
                 if act >= 3 and act <= 6:
                     chef.setItem(escenario.cajas[act-3].item)
