@@ -7,6 +7,8 @@
 # Importamos las definiciones de cada objeto
 from assets.classes import Receta
 
+from assets.classes import Item
+
 
 # Creamos una clase que contenga todas las recetas
 
@@ -15,12 +17,14 @@ class RecetaList:
         
         # Primer receta
         self.receta1 = Receta(
-            name = "Test",
-            type = "Test",
-            ingredients = {
-                "Test": "A",
-                "Test2": "B",
-            }
+            "Hamburguesa",
+            [
+                Item("Pan", 1),
+                Item("Carne", 1),
+                Item("Lechuga", 1),
+                Item("Queso", 1)
+            ]
+            
         )
         
         

@@ -24,13 +24,33 @@ escenarios = escenarios.EscenarioList()
 from assets.data import recetas
 recetas = recetas.RecetaList()
 
+# Importar clase Item
+from assets.classes import Item
+
+# Importar clase Estacion
+from assets.classes import Mostrador
+
 # Se define la clase del frame
 class GameFrame(StyledFrame):
     def __init__(self, parent, controller, root):
         super().__init__(parent, controller, style.colors["default"], root) # Se hereda el controlador
         
-        # --- Variables de control ---
+        # --- Variables globales ---
         self.debug = False
+        
+        self.default_item = Item("Nada", 1, "assets/img/nada.png")
+        
+        self.mostradores = [
+            Mostrador("Mostrador 1", self.default_item),
+            Mostrador("Mostrador 2", self.default_item),
+            Mostrador("Mostrador 3", self.default_item),
+            Mostrador("Mostrador 4", self.default_item)
+        ]
+        
+        self.mostradores_img = []
+        
+        # Modo Debug
+        #self.canvas_fg.place_forget()
         
         # --- Banner ---
         
@@ -124,9 +144,6 @@ class GameFrame(StyledFrame):
 
         # Forzar el fondo por debajo de los canvas
         self.bg_label.lower(self.canvas_bg)
-        
-        # Modo Debug
-        #self.canvas_fg.place_forget()
 
         # Dibujar el Grid en el Canvas
         for r in range(0, len(escenario.layout)):
@@ -159,6 +176,11 @@ class GameFrame(StyledFrame):
                 elif obj == 2:
                     tipo = "green"
                     block_img = tk.PhotoImage(file="assets/img/plato.png").subsample(5,5)
+                    for i in self.mostradores:
+                        if i.x == 0 and i.y == 0:
+                            i.x = x1
+                            i.y = y1
+                            break
                     
                 elif obj >= 3 and obj <= 6:
                     
@@ -190,8 +212,11 @@ class GameFrame(StyledFrame):
                 
                 self.canvas_fg.images.append(block_img)
                 self.canvas_fg.create_image(x1+size/2, y1+size/2, anchor="center", image=self.canvas_fg.images[-1])
-                
 
+        for x in self.mostradores:
+            print(x.name, x.x, x.y)
+            mostrador_img = tk.PhotoImage(file="assets/img/nada.png").subsample(8,8)
+            self.mostradores_img.append([mostrador_img, self.canvas_fg.create_image(x.x+size/7, x.y, image=mostrador_img, anchor="nw")])
 
         # Dibujar los jugadores
         
@@ -222,9 +247,10 @@ class GameFrame(StyledFrame):
             fill="red")
 
         # Item (Canvas superior)
-        img_item1 = tk.PhotoImage(file="assets/img/plato.png").subsample(8,8)
-        self.canvas_fg.img_item1 = img_item1
-        chef1_item = self.canvas_fg.create_image(controller.chef1.posX-size/4, controller.chef1.posY-size/4, anchor="nw", image=img_item1)
+        controller.chef1.item = self.default_item
+        self.chef1_item_img = tk.PhotoImage(file=self.default_item.img).subsample(8,8)
+        self.chef1_item = self.canvas_fg.create_image(controller.chef1.posX-size/4, controller.chef1.posY-size/4, anchor="nw", image=self.chef1_item_img)
+        
         
         # Jugador 2
         controller.chef2.posX = escenario.posChef2[0] * size
@@ -248,9 +274,9 @@ class GameFrame(StyledFrame):
             fill="red")
 
         # Item (Canvas superior)
-        img_item2 = tk.PhotoImage(file="assets/img/plato.png").subsample(8,8)
-        self.canvas_fg.img_item2 = img_item2
-        chef2_item = self.canvas_fg.create_image(controller.chef2.posX-size/4, controller.chef2.posY-size/4, anchor="nw", image=img_item2)
+        controller.chef2.item = self.default_item
+        self.chef2_item_img = tk.PhotoImage(file=self.default_item.img).subsample(8,8)
+        self.chef2_item = self.canvas_fg.create_image(controller.chef2.posX-size/4, controller.chef2.posY-size/4, anchor="nw", image=self.chef2_item_img)
 
         def mover(event):
             key = event.keysym
@@ -271,14 +297,14 @@ class GameFrame(StyledFrame):
                 chef_pos = chef1_pos
                 chef_avatar = chef1_avatar
                 chef_cursor = chef1_cursor
-                chef_item = chef1_item
+                chef_item = self.chef1_item
             
             elif key in controller.chef2.keySet:
                 chef = controller.chef2
                 chef_pos = chef2_pos
                 chef_avatar = chef2_avatar
                 chef_cursor = chef2_cursor
-                chef_item = chef2_item
+                chef_item = self.chef2_item
             
             else:
                 return
@@ -333,26 +359,49 @@ class GameFrame(StyledFrame):
                     self.after(20, lambda: 
                         self.canvas_bg.move(chef_cursor, 0, -size/2)
                         )
+                    
+                # Se interactuó con el mostrador
+                if act == 2:
+                    for mostrador in self.mostradores:
+                        if mostrador.x == chef.posX and mostrador.y == chef.posY+size:
+                            
+                            print(mostrador.name)
+                            print(chef.item.name, mostrador.item.name, self.default_item.name)
+                            if chef.item.name == self.default_item.name:
+                                if mostrador.item.name != self.default_item.name:
+                                    chef.setItem(mostrador.item)
+                                    mostrador.recoger(self.default_item)
+                                    self.updateMostradores(self.mostradores, self.mostradores_img, self.canvas_fg)
+                                    self.showPlayerItem(chef, chef_item, self.canvas_fg)
+                                
+                            elif chef.item.name != self.default_item.name:
+                                    mostrador.colocar(chef.item)
+                                    self.updateMostradores(self.mostradores, self.mostradores_img, self.canvas_fg)
+                                    
+                                    chef.setItem(self.default_item)
+                                    self.showPlayerItem(chef, chef_item, self.canvas_fg)
+                    print("CCCC")
 
                 # Se interactuó con una caja
                 if act >= 3 and act <= 6:
                     chef.setItem(escenario.cajas[act-3].item)
+                    self.showPlayerItem(chef, chef_item, self.canvas_fg)
                     
-                    item_img = tk.PhotoImage(file=chef.item.img).subsample(8,8)
-                    if chef is controller.chef1:
-                        self.canvas_fg.img1 = item_img
-                    else:
-                        self.canvas_fg.img2 = item_img
-                    
-                    self.canvas_fg.itemconfig(chef_item, image=item_img)
                     
                 
                 # Se interactuó con una estación
                 if act >= 7 and act <= 9:
-                    print("Procesando")
-                    # Procesar
-
-                print(act)
+                    result = escenario.estaciones[act-7].procesar(chef.item)
+                    print("Result:", result)
+                    
+                    if result != -1:
+                        if result != []:
+                            chef.setItem(result)
+                        else:
+                            chef.setItem(self.default_item)
+                        self.showPlayerItem(chef, chef_item, self.canvas_fg)
+                    else:
+                        return
 
         # Vincular las teclas
         root.bind("<Key>", mover)

@@ -249,24 +249,44 @@ class Caja:
         
 # Clase de Estacion donde se procesan ingredientes
 class Estacion:
-    def __init__(self, name="", type="", ingredients={}, result={}, img=""): # Parámetros de inicialización
+    def __init__(self, name="", type="", ingredients=[], results=[], img=""): # Parámetros de inicialización
         self.name = name # Nombre de la estacion
         self.type = type # Tipo de la estacion
         self.ingredients = ingredients # Ingredientes de la estacion
-        self.result = result # Resultado de la estacion
+        self.results = results # Resultado de la estacion
         self.img = img # Imagen de la estacion
 
-    def procesar(self, ingredients):
-        if self.ingredients == ingredients:
-            return self.result
-        else:
-            return None
+    def procesar(self, ingrediente):
+        if self.type == "Tira":
+            return []
+        
+        elif self.type == "Pica" or self.type == "Cocina":
+            print("INGREDIENTE:", self.ingredients)
+            for i in range(0,len(self.ingredients)):
+                print(ingrediente.name, self.ingredients[i].name)
+                if ingrediente.name == self.ingredients[i].name:
+                    return self.results[i]
+            return -1
+
+class Mostrador:
+    def __init__(self, name="", item=None): # Parámetros de inicialización
+        self.name = name # Nombre del mostrador
+        self.item = item # Objeto del mostrador
+        self.x = 0 # Posición x
+        self.y = 0 # Posición y
+        
+    def colocar(self, item):
+        print("Colocar:", item.name)
+        self.item = item
+        
+    def recoger(self, item):
+        self.item = item
+        return self.item
 
 # Se define el modelo de receta
 class Receta:
     def __init__(self, name="", type="", ingredients={}, img=""): # Parámetros de inicialización
         self.name = name # Nombre de la receta
-        self.type = type # Tipo de la receta
         self.ingredients = ingredients # Ingredientes de la receta
         self.img = img # Imagen de la receta
         
@@ -339,7 +359,23 @@ class StyledFrame(tk.Frame):
             cursor="hand2", # Cursor
             command=command # Función
             )
+    
+    # Método para actualizar un jugador
+    def showPlayerItem(self, chef, chef_item,  canvas):
+        item_img = tk.PhotoImage(file=chef.item.img).subsample(8,8)
+        if chef.name == "Chef1":
+            canvas.img1 = item_img
+        else:
+            canvas.img2 = item_img
+        canvas.itemconfig(chef_item, image=item_img)
         
+    # Método para actualizar los mostradores
+    def updateMostradores(self, mostradores, mostradores_img, canvas):
+        print(mostradores)
+        for i in range(0,len(mostradores)):
+            print(mostradores[i])
+            mostradores_img[i][0] = tk.PhotoImage(file=mostradores[i].item.img).subsample(8,8)
+            canvas.itemconfig(mostradores_img[i][1], image=mostradores_img[i][0])
         
     # Método para ocultar un elemento
     def hide(self, elem):

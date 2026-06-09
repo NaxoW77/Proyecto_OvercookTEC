@@ -10,7 +10,7 @@ from assets.classes import Caja
 from assets.classes import Estacion
 from assets.classes import Item
 from assets.data import recetas
-resetas = recetas.RecetaList()
+recetas = recetas.RecetaList()
 
 
 # Creamos una clase que contenga todas las recetas
@@ -22,23 +22,27 @@ class EscenarioList:
         self.escenario1 = Escenario(
             name = "E1",
             recetas = [
-                resetas.getReceta("Test1"),
-                resetas.getReceta("Test2"),
-                resetas.getReceta("Test3"),],
+                recetas.getReceta("Hamburguesa"),
+                recetas.getReceta("Test2"),
+                recetas.getReceta("Test3"),
+                ],
             
             # Mapa
             # Simbología:
-            # 0 = vacío
-            # 1 = pared
-            # 2 = mostrador
+            # 0 = Suelo
+            # 1 = Pared
+            # 2 = Mostrador
             # 3 = Almacén 1
             # 4 = Almacén 2
             # 5 = Almacén 3
-            # 6 = Estación 1
-            # 7 = Estación 2
+            # 6 = Almacén 4
+            # 7 = Estación 1
+            # 8 = Estación 1
+            # 9 = Estación 2
+    
             layout = [
                 [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-                [1, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 1],
+                [1, 9, 3, 3, 4, 4, 5, 5, 6, 6, 9, 1],
                 [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
                 [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
                 [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
@@ -47,7 +51,7 @@ class EscenarioList:
                 [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
                 [1, 7, 7, 7, 0, 0, 0, 0, 8, 8, 8, 1],
                 [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-                [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 1],
+                [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
                 [1, 1, 1, 1, 2, 2, 2, 2, 1, 1, 1, 1]
             ],
             
@@ -58,13 +62,43 @@ class EscenarioList:
             
             # Tipos de estaciones
             caja3 = Caja("Carnes", Item("Carne cruda", 1, "assets/img/carne_cruda.png")),
-            caja4 = Caja("Lechugas", Item("Lechuga", 1, "assets/img/lechuga.png")),
+            caja4 = Caja("Papas", Item("Papa", 1, "assets/img/papa_cruda.png")),
             caja5 = Caja("Panes", Item("Pan", 1, "assets/img/pan.png")),
             caja6 = Caja("Quesos", Item("Queso", 1, "assets/img/queso.png")),
             
-            estacion7 = Estacion("Tabla", "Pica", {}, {}, "assets/img/tabla.png"),
-            estacion8 = Estacion("Cocina", "Cocina", {}, {}, "assets/img/cocina.png"),
-            estacion9 = Estacion("Basurero", "Tira", {}, {}, "assets/img/basurero.png"),
+            estacion7 = Estacion(
+                "Tabla",
+                "Pica",
+                [
+                    Item("Lechuga", 1, "assets/img/lechuga.png"),
+                    Item("Carne cruda", 1, "assets/img/carne_cruda.png"),
+                    Item("Tomate", 1, "assets/img/tomate.png"),
+                    Item("Queso", 1, "assets/img/queso.png"),
+                    Item("Papa", 1, "assets/img/papa.png")
+                ],
+                [
+                    Item("Lechuga picada", 1, "assets/img/lechuga_picada.png"),
+                    Item("Carne picada", 1, "assets/img/carne_picada.png"),
+                    Item("Tomate picado", 1, "assets/img/tomate_picado.png"),
+                    Item("Queso picado", 1, "assets/img/queso_picado.png"),
+                    Item("Papa picada", 1, "assets/img/papa_picada.png")
+                ],
+                "assets/img/tabla.png"),
+            
+            estacion8 = Estacion(
+                "Cocina",
+                "Cocina",
+                [
+                Item("Carne picada", 1, "assets/img/carne_picada.png"),
+                Item("Papa picada", 1, "assets/img/papa_picada.png"),
+                ],
+                [
+                    Item("Carne", 1, "assets/img/carne.png"),
+                    Item("Papa", 1, "assets/img/papas.png")
+                ],
+                "assets/img/cocina.png"),
+            
+            estacion9 = Estacion("Basurero", "Tira", [], [], "assets/img/basurero.png"),
             
             fondo="assets/img/escenario1.png"
         )
