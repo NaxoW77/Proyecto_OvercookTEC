@@ -141,7 +141,6 @@ class Player:
                 item = item[0]
         
             fill = canvas.itemcget(item, "fill")
-            print(fill)
             
             if fill == "blue":
                 return -1
@@ -196,7 +195,7 @@ class Player:
     
     # Objetos
     def setItem(self, item):
-        print("ITEM:", item.name)
+        
         self.item = item
         
     def getItems(self):
@@ -261,9 +260,9 @@ class Estacion:
             return []
         
         elif self.type == "Pica" or self.type == "Cocina":
-            print("INGREDIENTE:", self.ingredients)
+            
             for i in range(0,len(self.ingredients)):
-                print(ingrediente.name, self.ingredients[i].name)
+                
                 if ingrediente.name == self.ingredients[i].name:
                     return self.results[i]
             return -1
@@ -276,7 +275,6 @@ class Mostrador:
         self.y = 0 # Posición y
         
     def colocar(self, item):
-        print("Colocar:", item.name)
         self.item = item
         
     def recoger(self, item):
@@ -372,7 +370,7 @@ class StyledFrame(tk.Frame):
     # Método para actualizar los mostradores
     def updateMostradores(self, mostradores, mostradores_img, canvas):
         for i in range(0,len(mostradores)):
-            print(mostradores[i])
+            
             mostradores_img[i][0] = tk.PhotoImage(file=mostradores[i].item.img).subsample(8,8)
             canvas.itemconfig(mostradores_img[i][1], image=mostradores_img[i][0])
         

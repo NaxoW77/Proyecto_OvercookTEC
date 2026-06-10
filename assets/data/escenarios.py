@@ -27,7 +27,7 @@ class EscenarioList:
             [
                 Item("Pan", 1),
                 Item("Torta de carne", 1),
-                Item("Queso picado", 1),
+                Item("Tajada de queso", 1),
                 Item("Papas fritas", 1)
             ],
             "assets/img/hamburguesa.png"
@@ -39,7 +39,7 @@ class EscenarioList:
                     Item("Pan", 1),
                     Item("Torta de carne", 1),
                     Item("Torta de carne", 1),
-                    Item("Queso picado", 1),
+                    Item("Tajada de queso", 1),
                 ],
                 "assets/img/hamburguesa.png"
             ),
@@ -60,7 +60,7 @@ class EscenarioList:
                 [
                     Item("Pan", 1),
                     Item("Torta de carne", 1),
-                    Item("Queso picado", 1),
+                    Item("Tajada de queso", 1),
                     Item("Papas fritas", 1)
                 ],
                 "assets/img/hamburguesa.png"
@@ -71,8 +71,8 @@ class EscenarioList:
                 [
                     Item("Papas fritas", 1),
                     Item("Papas fritas", 1),
-                    Item("Queso picado", 1),
-                    Item("Queso picado", 1)
+                    Item("Tajada de queso", 1),
+                    Item("Tajada de queso", 1)
                 ],
                 "assets/img/papas.png"
             )
@@ -131,7 +131,7 @@ class EscenarioList:
                     Item("Lechuga picada", 1, "assets/img/lechuga_picada.png"),
                     Item("Carne picada", 1, "assets/img/carne_picada.png"),
                     Item("Tomate picado", 1, "assets/img/tomate_picado.png"),
-                    Item("Queso picado", 1, "assets/img/queso_picado.png"),
+                    Item("Tajada de queso", 1, "assets/img/queso_picado.png"),
                     Item("Papa picada", 1, "assets/img/papa_picada.png")
                 ],
                 "assets/img/tabla.png"),
