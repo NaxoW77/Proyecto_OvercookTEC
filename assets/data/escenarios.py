@@ -9,8 +9,7 @@ from assets.classes import Escenario
 from assets.classes import Caja
 from assets.classes import Estacion
 from assets.classes import Item
-from assets.data import recetas
-recetas = recetas.RecetaList()
+from assets.classes import Receta
 
 
 # Creamos una clase que contenga todas las recetas
@@ -21,11 +20,63 @@ class EscenarioList:
         # Primer escenario
         self.escenario1 = Escenario(
             name = "E1",
+            
             recetas = [
-                recetas.getReceta("Hamburguesa"),
-                recetas.getReceta("Test2"),
-                recetas.getReceta("Test3"),
+                Receta(
+            "Hamburguesa con papas",
+            [
+                Item("Pan", 1),
+                Item("Torta de carne", 1),
+                Item("Queso picado", 1),
+                Item("Papas fritas", 1)
+            ],
+            "assets/img/hamburguesa.png"
+            ),
+            
+            Receta(
+                "Hamburguesa doble",
+                [
+                    Item("Pan", 1),
+                    Item("Torta de carne", 1),
+                    Item("Torta de carne", 1),
+                    Item("Queso picado", 1),
                 ],
+                "assets/img/hamburguesa.png"
+            ),
+            
+            Receta(
+                "Hamburguesa Triple",
+                [
+                    Item("Pan", 1),
+                    Item("Torta de carne", 1),
+                    Item("Torta de carne", 1),
+                    Item("Torta de carne", 1)
+                ],
+                "assets/img/hamburguesa.png"
+            ),
+            
+            Receta(
+                "Hamburguesa con papas y queso",
+                [
+                    Item("Pan", 1),
+                    Item("Torta de carne", 1),
+                    Item("Queso picado", 1),
+                    Item("Papas fritas", 1)
+                ],
+                "assets/img/hamburguesa.png"
+            ),
+            
+            Receta(
+                "Papas fritas con queso",
+                [
+                    Item("Papas fritas", 1),
+                    Item("Papas fritas", 1),
+                    Item("Queso picado", 1),
+                    Item("Queso picado", 1)
+                ],
+                "assets/img/papas.png"
+            )
+            ],
             
             # Mapa
             # Simbología:
@@ -93,8 +144,8 @@ class EscenarioList:
                 Item("Papa picada", 1, "assets/img/papa_picada.png"),
                 ],
                 [
-                    Item("Carne", 1, "assets/img/carne.png"),
-                    Item("Papa", 1, "assets/img/papas.png")
+                    Item("Torta de carne", 1, "assets/img/carne.png"),
+                    Item("Papas fritas", 1, "assets/img/papas.png")
                 ],
                 "assets/img/cocina.png"),
             

@@ -28,5 +28,7 @@ class Style:
             "black": "#000000",
             "main": "#dbd339",
             "game": "#db9a39",
+            "fail": "#db3939",
+            "correct": "#5cdb39",
             "exit": "#ff0000",
         }

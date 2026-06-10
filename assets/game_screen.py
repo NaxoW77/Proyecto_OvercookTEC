@@ -7,6 +7,7 @@
 from assets.classes import tk
 from assets.classes import ttk
 from assets.classes import StyledFrame
+import random
 
 # Importar textos
 from assets.lang import Lang
@@ -19,10 +20,6 @@ style = Style()
 # Importar escenarios
 from assets.data import escenarios
 escenarios = escenarios.EscenarioList()
-
-# Importar recetas
-from assets.data import recetas
-recetas = recetas.RecetaList()
 
 # Importar clase Item
 from assets.classes import Item
@@ -47,7 +44,13 @@ class GameFrame(StyledFrame):
             Mostrador("Mostrador 4", self.default_item)
         ]
         
+        self.puntaje = 0
+        self.vidas = 3
+        
         self.mostradores_img = []
+
+        self.pedidos = {}
+        self.tiempo_pedido = 0
         
         # Modo Debug
         #self.canvas_fg.place_forget()
@@ -75,47 +78,32 @@ class GameFrame(StyledFrame):
         main_frame.pack(fill="both", expand=True, pady=0)
 
         # --- Body izquierdo ---
-        left = tk.Frame(main_frame, bg=style.colors["game"], width=500)
-        
-        # Ancho del panel izquierdo
-        left.pack(side="left", fill="both", padx=0)
+        left = tk.Frame(main_frame, bg=style.colors["game"], width=400)
+        left.pack(side="left", fill="y", padx=0)
+        left.pack_propagate(False)
 
-        # Contenedor para los pedidos
         floating_frame = tk.Frame(left, bg=style.colors["default"], bd=2, relief="raised")
-        floating_frame.pack(padx=8, pady=12)
+        floating_frame.pack(padx=8, pady=12, fill="both", expand=True)
+    
+        self.card_images = []
 
-        left_title = tk.Label(floating_frame, text="Pedidos", bg=style.colors["default"], fg=style.colors["main"], font=("Helvetica", 14, "bold"))
-        left_title.pack(pady=(12, 6))
+        left_title1 = tk.Label(floating_frame, text="Escenario 1", bg=style.colors["default"], fg=style.colors["main"], font=("Helvetica", 14, "bold"))
+        left_title1.pack(pady=(12, 6))
+        
+        self.vidas_label = tk.Label(floating_frame, text="Vidas: 3", bg=style.colors["default"], fg=style.colors["text"], font=("Helvetica", 12))
+        self.vidas_label.pack(pady=(0, 12))
+        
+        self.puntaje_label = tk.Label(floating_frame, text="Puntos: 0", bg=style.colors["default"], fg=style.colors["text"], font=("Helvetica", 12))
+        self.puntaje_label.pack(pady=(0, 12))
 
-        left_text = tk.Label(floating_frame, text="[...].", bg=style.colors["default"], justify="left", wraplength=400)
-        left_text.pack(padx=10)
+        left_title2 = tk.Label(floating_frame, text="Pedidos", bg=style.colors["default"], fg=style.colors["main"], font=("Helvetica", 14, "bold"))
+        left_title2.pack(pady=(12, 6))
 
         # Tabla para los pedidos
-        table_frame = tk.Frame(floating_frame, bg=style.colors["default"])
-        table_frame.pack(padx=10, pady=12)
+        self.table_frame = tk.Frame(floating_frame, bg=style.colors["default"])
+        self.table_frame.pack(padx=10, pady=12, fill="both", expand=True)
 
-        card = tk.Frame(table_frame, bg=style.colors["default"], bd=2, relief="groove")
-        card.pack()
-
-        # Imagen del elemento
-        self.left_item_img = tk.PhotoImage(file="assets/img/hamburguesa.png").subsample(6,6)
-        img_label = tk.Label(card, image=self.left_item_img, bg=style.colors["default"])
-        img_label.pack(side="left", padx=6, pady=6)
-
-        # Contenido del pedido
-        item_content = tk.Frame(card, bg=style.colors["default"])
-        item_content.pack(side="left", padx=6, pady=6)
-
-        item_title = tk.Label(item_content, text="Hamburguesa", bg=style.colors["default"], fg=style.colors["text"], font=("Helvetica", 12, "bold"))
-        item_title.pack(anchor="nw")
-
-        item_list = tk.Frame(item_content, bg=style.colors["default"])
         
-        item_list.pack(anchor="nw", pady=(4,0))
-        tk.Label(item_list, text="• Pan", bg=style.colors["default"], fg=style.colors["text"]).pack(anchor="w")
-        tk.Label(item_list, text="• Carne", bg=style.colors["default"], fg=style.colors["text"]).pack(anchor="w")
-        tk.Label(item_list, text="• Lechuga", bg=style.colors["default"], fg=style.colors["text"]).pack(anchor="w")
-        tk.Label(item_list, text="• Queso", bg=style.colors["default"], fg=style.colors["text"]).pack(anchor="w")
 
         # --- Body derecho ---
         right = tk.Frame(main_frame, bg=style.colors["default"])
@@ -214,7 +202,6 @@ class GameFrame(StyledFrame):
                 self.canvas_fg.create_image(x1+size/2, y1+size/2, anchor="center", image=self.canvas_fg.images[-1])
 
         for x in self.mostradores:
-            print(x.name, x.x, x.y)
             mostrador_img = tk.PhotoImage(file="assets/img/nada.png").subsample(8,8)
             self.mostradores_img.append([mostrador_img, self.canvas_fg.create_image(x.x+size/7, x.y, image=mostrador_img, anchor="nw")])
 
@@ -277,6 +264,134 @@ class GameFrame(StyledFrame):
         controller.chef2.item = self.default_item
         self.chef2_item_img = tk.PhotoImage(file=self.default_item.img).subsample(8,8)
         self.chef2_item = self.canvas_fg.create_image(controller.chef2.posX-size/4, controller.chef2.posY-size/4, anchor="nw", image=self.chef2_item_img)
+        
+        def mostrar_mensaje(mensaje, duracion=2000, color=style.colors["game"]):
+            msg_label = tk.Label(right, text=mensaje, bg=color, fg="white", font=("Helvetica", 16, "bold"), relief="raised", bd=2)
+            msg_label.place(relx=0.5, rely=0.5, anchor="center")
+            
+            def eliminar():
+                msg_label.destroy()
+            
+            self.after(duracion, eliminar)
+
+        def verificar_receta():
+            
+            # Revisar items en mostradores
+            items_en_mostradores = [m.item for m in self.mostradores]
+            
+            # Revisar que sean diferentes a nada
+            if all(item.name != self.default_item.name for item in items_en_mostradores):
+                
+                # Obtener todas las recetas
+                items_names = sorted([item.name for item in items_en_mostradores])
+                
+                # Revisar cada receta
+                for receta in escenario.recetas:
+                    receta_items = sorted([ing.name for ing in receta.ingredientes])
+                    
+                    if items_names == receta_items:
+                        
+                        # Si se encuentra una receta, completar el pedido
+                        self.puntaje += 25
+                        self.puntaje_label.config(text=f"Puntaje: {self.puntaje}")
+                        mostrar_mensaje(f"¡Pedido entregado!\n+25 pts", 1500, style.colors["correct"])
+                        
+                        # Remover el pedido
+                        for pedido_id in list(self.pedidos.keys()):
+                            quitarPedido(pedido_id)
+                            break
+                        
+                        # Limpiar mostradores
+                        for mostrador in self.mostradores:
+                            mostrador.recoger(self.default_item)
+                        self.updateMostradores(self.mostradores, self.mostradores_img, self.canvas_fg)
+                        return True
+                
+                return False
+        
+        def nuevoPedido(receta, timer_seconds=random.randint(20, 60)):
+            pedido = self.tiempo_pedido
+            self.tiempo_pedido += 1
+            
+            card = tk.Frame(self.table_frame, bg=style.colors["default"], bd=2, relief="groove")
+            card.pack(fill="x", padx=5, pady=5)
+
+            # Imagen del elemento
+            card_item_img = tk.PhotoImage(file=receta.img).subsample(6,6)
+            self.card_images.append(card_item_img)
+            
+            img_label = tk.Label(card, image=card_item_img, bg=style.colors["default"])
+            img_label.pack(side="left", padx=6, pady=6)
+
+            # Contenido del pedido
+            item_content = tk.Frame(card, bg=style.colors["default"])
+            item_content.pack(side="left", padx=6, pady=6, fill="both", expand=True)
+
+            title_frame = tk.Frame(item_content, bg=style.colors["default"])
+            title_frame.pack(fill="x", anchor="nw")
+
+            item_title = tk.Label(title_frame, text=receta.name, bg=style.colors["default"], fg=style.colors["text"], font=("Helvetica", 12, "bold"), wraplength=200)
+            item_title.pack(side="left", anchor="nw")
+
+            # Contador
+            timer_label = tk.Label(title_frame, text=f"{timer_seconds}s", bg=style.colors["default"], fg=style.colors["main"], font=("Helvetica", 20, "bold"))
+            timer_label.pack(side="right", padx=(10, 0))
+
+            item_list = tk.Frame(item_content, bg=style.colors["default"])
+            
+            for ingrediente in receta.ingredientes:
+                tk.Label(item_list, text=" • "+ingrediente.name, bg=style.colors["default"], fg=style.colors["text"]).pack(anchor="w")
+            
+            item_list.pack(anchor="nw")
+
+            # Propiedades del pedido
+            self.pedidos[pedido] = {
+                'widget': card,
+                'timer_id': None,
+                'timer_label': timer_label,
+                'time_remaining': timer_seconds
+            }
+            
+            if len(self.pedidos) > 3:
+                self.puntaje -= 10
+                self.vidas -= 1
+                self.puntaje_label.config(text=f"Puntaje: {self.puntaje}")
+                self.vidas_label.config(text=f"Vidas: {self.vidas}")
+                mostrar_mensaje("¡Pedido perdido!\n-10 pts", 1500, style.colors["fail"])
+                quitarPedido(list(self.pedidos.keys())[0])
+
+            # Contador
+            def update_timer():
+                if pedido in self.pedidos:
+                    self.pedidos[pedido]['time_remaining'] -= 1
+                    remaining = self.pedidos[pedido]['time_remaining']
+                    
+                    if remaining > 0:
+                        timer_label.config(text=f"{remaining}s")
+                        self.pedidos[pedido]['timer_id'] = self.after(1000, update_timer)
+                    else:
+                        
+                        # Si se acaba el tiempo
+                        self.puntaje -= 10
+                        self.vidas -= 1
+                        self.puntaje_label.config(text=f"Puntaje: {self.puntaje}")
+                        self.vidas_label.config(text=f"Vidas: {self.vidas}")
+                        mostrar_mensaje("¡Pedido perdido!\n-10 pts", 1500, style.colors["fail"])
+                        quitarPedido(pedido)
+
+            self.pedidos[pedido]['timer_id'] = self.after(1000, update_timer)
+
+        def quitarPedido(pedido):
+            if pedido in self.pedidos:
+                
+                if self.pedidos[pedido]['timer_id']:
+                    self.after_cancel(self.pedidos[pedido]['timer_id'])
+                
+                # Eliminar la carta
+                self.pedidos[pedido]['widget'].destroy()
+                
+                # Eliminar de la lista
+                del self.pedidos[pedido]
 
         def mover(event):
             key = event.keysym
@@ -364,9 +479,7 @@ class GameFrame(StyledFrame):
                 if act == 2:
                     for mostrador in self.mostradores:
                         if mostrador.x == chef.posX and mostrador.y == chef.posY+size:
-                            
-                            print(mostrador.name)
-                            print(chef.item.name, mostrador.item.name, self.default_item.name)
+                        
                             if chef.item.name == self.default_item.name:
                                 if mostrador.item.name != self.default_item.name:
                                     chef.setItem(mostrador.item)
@@ -375,12 +488,16 @@ class GameFrame(StyledFrame):
                                     self.showPlayerItem(chef, chef_item, self.canvas_fg)
                                 
                             elif chef.item.name != self.default_item.name:
-                                    mostrador.colocar(chef.item)
-                                    self.updateMostradores(self.mostradores, self.mostradores_img, self.canvas_fg)
-                                    
-                                    chef.setItem(self.default_item)
-                                    self.showPlayerItem(chef, chef_item, self.canvas_fg)
-                    print("CCCC")
+                                    if mostrador.item.name == self.default_item.name:
+                                        mostrador.colocar(chef.item)
+                                        self.updateMostradores(self.mostradores, self.mostradores_img, self.canvas_fg)
+                                        
+                                        chef.setItem(self.default_item)
+                                        self.showPlayerItem(chef, chef_item, self.canvas_fg)
+                                        
+                                        # Check if recipe is completed
+                                        verificar_receta()
+                                            
 
                 # Se interactuó con una caja
                 if act >= 3 and act <= 6:
@@ -391,8 +508,12 @@ class GameFrame(StyledFrame):
                 
                 # Se interactuó con una estación
                 if act >= 7 and act <= 9:
+                    
+                    # Test
+                    if act == 9:
+                        nuevoPedido(escenario.recetas[random.randint(0,len(escenario.recetas)-1)], random.randint(20, 60))
+                    
                     result = escenario.estaciones[act-7].procesar(chef.item)
-                    print("Result:", result)
                     
                     if result != -1:
                         if result != []:

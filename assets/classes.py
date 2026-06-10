@@ -285,9 +285,9 @@ class Mostrador:
 
 # Se define el modelo de receta
 class Receta:
-    def __init__(self, name="", type="", ingredients={}, img=""): # Parámetros de inicialización
+    def __init__(self, name="", ingredientes={}, img=""): # Parámetros de inicialización
         self.name = name # Nombre de la receta
-        self.ingredients = ingredients # Ingredientes de la receta
+        self.ingredientes = ingredientes # Ingredientes de la receta
         self.img = img # Imagen de la receta
         
 
@@ -371,7 +371,6 @@ class StyledFrame(tk.Frame):
         
     # Método para actualizar los mostradores
     def updateMostradores(self, mostradores, mostradores_img, canvas):
-        print(mostradores)
         for i in range(0,len(mostradores)):
             print(mostradores[i])
             mostradores_img[i][0] = tk.PhotoImage(file=mostradores[i].item.img).subsample(8,8)
