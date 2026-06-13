@@ -94,8 +94,8 @@ class GameFrame(StyledFrame):
     
         self.card_images = []
 
-        left_title1 = tk.Label(floating_frame, text="Escenario X", bg=style.colors["default"], fg=style.colors["main"], font=("Helvetica", 14, "bold"))
-        left_title1.pack(pady=(12, 6))
+        self.left_title1 = tk.Label(floating_frame, text="Escenario X", bg=style.colors["default"], fg=style.colors["main"], font=("Helvetica", 14, "bold"))
+        self.left_title1.pack(pady=(12, 6))
         
         self.vidas_label = tk.Label(floating_frame, text="Vidas: X", bg=style.colors["default"], fg=style.colors["text"], font=("Helvetica", 12))
         self.vidas_label.pack(pady=(0, 12))
@@ -145,6 +145,8 @@ class GameFrame(StyledFrame):
         self.mostrar_mensaje_func = mostrar_mensaje
         self.quitarPedido_func = quitarPedido
         
+    def game_over(self):
+        self.controller.show_frame("ResultsFrame")
         
     def update_frame(self):
         # Se carga el escenario
@@ -406,11 +408,10 @@ class GameFrame(StyledFrame):
                 mostrar_mensaje("¡Pedido perdido!\n-10 pts", 1500, style.colors["fail"])
                 quitarPedido(list(self.pedidos.keys())[0])
                 
-                
-                if self.vidas > 0:
+                if self.vidas <= 0:
                     generarPedido()
                 else:
-                    self.controller.show_frame("ResultsFrame")
+                    self.game_over()
 
             # Contador
             def update_timer():
@@ -541,7 +542,7 @@ class GameFrame(StyledFrame):
                     self.canvas_fg.move(chef_item, movement[0], movement[1])
                     self.canvas_bg.move(chef_cursor, movement[0], movement[1])
 
-                # Asegurar las coordenadas absolutas del cursor en el canvas superior
+                # Coordenadas absolutas del cursor
                 self.canvas_bg.coords(chef_cursor,
                                 chef.posX+size/2-size/8,chef.posY+size/2-size/8, chef.posX + size /2 + size/8, chef.posY + size/2 + size/8)
                 
@@ -653,7 +654,8 @@ class GameFrame(StyledFrame):
                     else:
                         return
         
-        # --- Initialize game state ---
+        # Inicializar el juego
+        self.left_title1.config(text=f"Escenario: {self.escenario.name}")
         self.vidas_label.config(text=f"Vidas: {self.vidas}")
         self.puntaje_label.config(text=f"Puntaje: {self.puntaje}")
         self.puntaje_max_label.config(text=f"Puntaje máximo: {self.puntaje_max}")
