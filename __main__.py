@@ -13,6 +13,7 @@ from assets.classes import ttk
 from assets.title_screen import IntroFrame
 from assets.game_screen import GameFrame
 from assets.results_screen import ResultsFrame
+from assets.select_screen import SelectFrame
 
 # Importar textos
 from assets.lang import Lang
@@ -125,7 +126,7 @@ class Main:
 
         # Llamada a todos los frames
         self.screens = {}
-        for screen in (IntroFrame, GameFrame, ResultsFrame):
+        for screen in (IntroFrame, SelectFrame, GameFrame, ResultsFrame):
             page_name = screen.__name__ # Se les coloca el nombre de la clase
             screenFrame = screen(parent=self.container, controller=self, root=self.root) # Se pasa el controlador principal a cada frame
             self.screens[page_name] = screenFrame # Se guardan los frames en una lista de fácil acceso
