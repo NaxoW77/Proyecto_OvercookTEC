@@ -12,6 +12,7 @@ from assets.classes import ttk
 # Importar secciones
 from assets.title_screen import IntroFrame
 from assets.game_screen import GameFrame
+from assets.results_screen import ResultsFrame
 
 # Importar textos
 from assets.lang import Lang
@@ -32,6 +33,11 @@ class Main:
         # Se instancian los modelos a usar
         self.chef1 = Player("Chef1", "", ["w", "s", "a", "d", "e"])
         self.chef2 = Player("Chef2", "", ["8", "5", "4", "6", "9"])
+        
+        # Variables globales
+        self.escenario = None
+        self.puntaje = 0
+        self.pedidos_completados = 0
         
         # Configuración general de la ventana
         self.root = root
@@ -119,7 +125,7 @@ class Main:
 
         # Llamada a todos los frames
         self.screens = {}
-        for screen in (IntroFrame, GameFrame):
+        for screen in (IntroFrame, GameFrame, ResultsFrame):
             page_name = screen.__name__ # Se les coloca el nombre de la clase
             screenFrame = screen(parent=self.container, controller=self, root=self.root) # Se pasa el controlador principal a cada frame
             self.screens[page_name] = screenFrame # Se guardan los frames en una lista de fácil acceso
@@ -166,8 +172,8 @@ class Main:
         frame.tkraise() # Función para mostrar el frame como tal
         
         # Se actualizan los datos en el frame, si es necesario
-        if hasattr(frame, 'update_display'):
-            frame.update_display() # Método interno
+        if hasattr(frame, 'update_frame'):
+            frame.update_frame() # Método interno
 
 # Main
 if __name__ == "__main__":

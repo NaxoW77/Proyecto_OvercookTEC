@@ -10,8 +10,6 @@ import tkinter as tk
 from tkinter import ttk
 import random as random
 
-# Se optó por utilizar deepcopy para instanciar objetos
-# Referencia: https://docs.python.org/3/library/copy.html
 from copy import deepcopy
 
 # Importar textos

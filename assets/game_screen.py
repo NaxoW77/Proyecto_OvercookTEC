@@ -31,6 +31,7 @@ from assets.classes import Mostrador
 class GameFrame(StyledFrame):
     def __init__(self, parent, controller, root):
         super().__init__(parent, controller, style.colors["default"], root) # Se hereda el controlador
+        self.root = root
         
         # --- Variables globales ---
         self.debug = False
@@ -44,8 +45,14 @@ class GameFrame(StyledFrame):
             Mostrador("Mostrador 4", self.default_item)
         ]
         
+        self.escenario = None
+        
         self.puntaje = 0
-        self.vidas = 3
+        self.puntaje_max = 0
+        self.vidas = 1
+        
+        self.pedidos_completados = 0
+        self.fase_tiempo = 1
         
         self.mostradores_img = []
 
@@ -87,14 +94,17 @@ class GameFrame(StyledFrame):
     
         self.card_images = []
 
-        left_title1 = tk.Label(floating_frame, text="Escenario 1", bg=style.colors["default"], fg=style.colors["main"], font=("Helvetica", 14, "bold"))
+        left_title1 = tk.Label(floating_frame, text="Escenario X", bg=style.colors["default"], fg=style.colors["main"], font=("Helvetica", 14, "bold"))
         left_title1.pack(pady=(12, 6))
         
-        self.vidas_label = tk.Label(floating_frame, text="Vidas: 3", bg=style.colors["default"], fg=style.colors["text"], font=("Helvetica", 12))
+        self.vidas_label = tk.Label(floating_frame, text="Vidas: X", bg=style.colors["default"], fg=style.colors["text"], font=("Helvetica", 12))
         self.vidas_label.pack(pady=(0, 12))
         
-        self.puntaje_label = tk.Label(floating_frame, text="Puntos: 0", bg=style.colors["default"], fg=style.colors["text"], font=("Helvetica", 12))
-        self.puntaje_label.pack(pady=(0, 12))
+        self.puntaje_max_label = tk.Label(floating_frame, text="Puntos totales: X", bg=style.colors["default"], fg=style.colors["text"], font=("Helvetica", 12))
+        self.puntaje_max_label.pack(pady=(0, 0))
+        
+        self.puntaje_label = tk.Label(floating_frame, text="Puntos: X", bg=style.colors["default"], fg=style.colors["text"], font=("Helvetica", 12))
+        self.puntaje_label.pack(pady=(0, 0))
 
         left_title2 = tk.Label(floating_frame, text="Pedidos", bg=style.colors["default"], fg=style.colors["main"], font=("Helvetica", 14, "bold"))
         left_title2.pack(pady=(12, 6))
@@ -108,19 +118,53 @@ class GameFrame(StyledFrame):
         # --- Body derecho ---
         right = tk.Frame(main_frame, bg=style.colors["default"])
         right.pack(side="left", fill="both", expand=True)
+        self.right = right  # Store as instance variable for update_frame
         
-        # Se carga el escenario 1
-        escenario = escenarios.getEscenario("E1")
+        def mostrar_mensaje(mensaje, duracion=2000, color=style.colors["game"]):
+            msg_label = tk.Label(right, text=mensaje, bg=color, fg="white", font=("Helvetica", 16, "bold"), relief="raised", bd=2)
+            msg_label.place(relx=0.5, rely=0.5, anchor="center")
+            
+            def eliminar():
+                msg_label.destroy()
+            
+            self.after(duracion, eliminar)
+
+        def quitarPedido(pedido):
+            if pedido in self.pedidos:
+                
+                if self.pedidos[pedido]['timer_id']:
+                    self.after_cancel(self.pedidos[pedido]['timer_id'])
+                
+                # Eliminar la carta
+                self.pedidos[pedido]['widget'].destroy()
+                
+                # Eliminar de la lista
+                del self.pedidos[pedido]
         
-        self.bg_image = tk.PhotoImage(file=escenario.fondo)
+        # Store these functions as instance methods for access in update_frame
+        self.mostrar_mensaje_func = mostrar_mensaje
+        self.quitarPedido_func = quitarPedido
+        
+        
+    def update_frame(self):
+        # Se carga el escenario
+        self.escenario = escenarios.getEscenario(self.controller.escenario)
+        
+        right = self.right
+        mostrar_mensaje = self.mostrar_mensaje_func
+        quitarPedido = self.quitarPedido_func
+        
+        # --- Setup del canvas y elementos del juego ---
+        
+        self.bg_image = tk.PhotoImage(file=self.escenario.fondo)
 
         # Fondo de la pantalla
         self.bg_label = tk.Label(right, image=self.bg_image)
         self.bg_label.place(x=0, y=0, relwidth=1, relheight=1)
         
-        rows = len(escenario.layout)
-        cols = len(escenario.layout[0])
-        size = escenario.tamaño
+        rows = len(self.escenario.layout)
+        cols = len(self.escenario.layout[0])
+        size = self.escenario.tamaño
 
         # Creamos el Canvas de fondo (grid y colisiones)
         self.canvas_bg = tk.Canvas(right, width=cols*size, height=rows*size, bg="white", highlightthickness=0)
@@ -134,8 +178,8 @@ class GameFrame(StyledFrame):
         self.bg_label.lower(self.canvas_bg)
 
         # Dibujar el Grid en el Canvas
-        for r in range(0, len(escenario.layout)):
-            for c in range(0, len(escenario.layout[r])):
+        for r in range(0, len(self.escenario.layout)):
+            for c in range(0, len(self.escenario.layout[r])):
                 x1 = c * size
                 y1 = r * size
                 x2 = x1 + size
@@ -145,10 +189,10 @@ class GameFrame(StyledFrame):
                 if not hasattr(self.canvas_fg, 'images'):
                     self.canvas_fg.images = []
 
-                block_img = tk.PhotoImage(file=escenario.estaciones[0].img).subsample(9,9)
+                block_img = tk.PhotoImage(file=self.escenario.estaciones[0].img).subsample(9,9)
                 tipo = "black"
                 
-                obj = escenario.layout[r][c]
+                obj = self.escenario.layout[r][c]
                 
                 # Texturas para cada objeto
                 # Modificar subsample si se va a cambiar
@@ -181,7 +225,7 @@ class GameFrame(StyledFrame):
                     elif obj == 6:
                         tipo = "#916226"
                         
-                    block_img = tk.PhotoImage(file=escenario.cajas[obj-3].item.img).subsample(6,6)
+                    block_img = tk.PhotoImage(file=self.escenario.cajas[obj-3].item.img).subsample(6,6)
                     
                 elif obj == 7 or obj == 8 or obj == 9:
                     
@@ -192,7 +236,7 @@ class GameFrame(StyledFrame):
                     elif obj == 9:
                         tipo = "#d8d8d9"                    
                     
-                    block_img = tk.PhotoImage(file=escenario.estaciones[obj-7].img).subsample(5,5)
+                    block_img = tk.PhotoImage(file=self.escenario.estaciones[obj-7].img).subsample(5,5)
                     
                 self.canvas_bg.create_rectangle(x1, y1, x2, y2, outline="black", fill=tipo)
     
@@ -208,72 +252,65 @@ class GameFrame(StyledFrame):
         # Dibujar los jugadores
         
         # Jugador 1
-        controller.chef1.posX = escenario.posChef1[0] * size
-        controller.chef1.posY = escenario.posChef1[1] * size
-        controller.chef1.size = size
+        self.controller.chef1.posX = self.escenario.posChef1[0] * size
+        self.controller.chef1.posY = self.escenario.posChef1[1] * size
+        self.controller.chef1.size = size
 
         # Cajas de colisión (Canvas de fondo)
         chef1_pos = self.canvas_bg.create_rectangle(
-            controller.chef1.posX,
-            controller.chef1.posY,
-            controller.chef1.posX + size,
-            controller.chef1.posY + size,
+            self.controller.chef1.posX,
+            self.controller.chef1.posY,
+            self.controller.chef1.posX + size,
+            self.controller.chef1.posY + size,
             fill="blue")
 
         # Avatar (Canvas Superior)
         chef1_img = tk.PhotoImage(file="assets/img/chef1.png").subsample(6,6)
         self.canvas_fg.chef1_img = chef1_img
-        chef1_avatar = self.canvas_fg.create_image(controller.chef1.posX, controller.chef1.posY, anchor="nw", image=chef1_img)
+        chef1_avatar = self.canvas_fg.create_image(self.controller.chef1.posX, self.controller.chef1.posY, anchor="nw", image=chef1_img)
 
         # Cursor (Canvas inferior)
         chef1_cursor = self.canvas_bg.create_rectangle(
-            controller.chef1.posX+size/2-size/8,
-            controller.chef1.posY+size/2-size/8,
-            controller.chef1.posX + size /2 + size/8,
-            controller.chef1.posY + size/2 + size/8,
+            self.controller.chef1.posX+size/2-size/8,
+            self.controller.chef1.posY+size/2-size/8,
+            self.controller.chef1.posX + size /2 + size/8,
+            self.controller.chef1.posY + size/2 + size/8,
             fill="red")
 
         # Item (Canvas superior)
-        controller.chef1.item = self.default_item
+        self.controller.chef1.item = self.default_item
         self.chef1_item_img = tk.PhotoImage(file=self.default_item.img).subsample(8,8)
-        self.chef1_item = self.canvas_fg.create_image(controller.chef1.posX-size/4, controller.chef1.posY-size/4, anchor="nw", image=self.chef1_item_img)
+        self.chef1_item = self.canvas_fg.create_image(self.controller.chef1.posX-size/4, self.controller.chef1.posY-size/4, anchor="nw", image=self.chef1_item_img)
         
         
         # Jugador 2
-        controller.chef2.posX = escenario.posChef2[0] * size
-        controller.chef2.posY = escenario.posChef2[1] * size
-        controller.chef2.size = size
+        self.controller.chef2.posX = self.escenario.posChef2[0] * size
+        self.controller.chef2.posY = self.escenario.posChef2[1] * size
+        self.controller.chef2.size = size
 
         # Cajas de colisión (Canvas de fondo)
-        chef2_pos = self.canvas_bg.create_rectangle(controller.chef2.posX, controller.chef2.posY, controller.chef2.posX + size, controller.chef2.posY + size, fill="purple")
+        chef2_pos = self.canvas_bg.create_rectangle(self.controller.chef2.posX, self.controller.chef2.posY, self.controller.chef2.posX + size, self.controller.chef2.posY + size, fill="purple")
         
         # Avatar (Canvas superior)
         chef2_img = tk.PhotoImage(file="assets/img/chef2.png").subsample(6,6)
         self.canvas_fg.chef2_img = chef2_img
-        chef2_avatar = self.canvas_fg.create_image(controller.chef2.posX, controller.chef2.posY, anchor="nw", image=chef2_img)
+        chef2_avatar = self.canvas_fg.create_image(self.controller.chef2.posX, self.controller.chef2.posY, anchor="nw", image=chef2_img)
 
         # Cursor (Canvas inferior)
         chef2_cursor = self.canvas_bg.create_rectangle(
-            controller.chef2.posX+size/2-size/8,
-            controller.chef2.posY+size/2-size/8,
-            controller.chef2.posX + size /2 + size/8,
-            controller.chef2.posY + size/2 + size/8,
+            self.controller.chef2.posX+size/2-size/8,
+            self.controller.chef2.posY+size/2-size/8,
+            self.controller.chef2.posX + size /2 + size/8,
+            self.controller.chef2.posY + size/2 + size/8,
             fill="red")
 
         # Item (Canvas superior)
-        controller.chef2.item = self.default_item
+        self.controller.chef2.item = self.default_item
         self.chef2_item_img = tk.PhotoImage(file=self.default_item.img).subsample(8,8)
-        self.chef2_item = self.canvas_fg.create_image(controller.chef2.posX-size/4, controller.chef2.posY-size/4, anchor="nw", image=self.chef2_item_img)
+        self.chef2_item = self.canvas_fg.create_image(self.controller.chef2.posX-size/4, self.controller.chef2.posY-size/4, anchor="nw", image=self.chef2_item_img)
         
-        def mostrar_mensaje(mensaje, duracion=2000, color=style.colors["game"]):
-            msg_label = tk.Label(right, text=mensaje, bg=color, fg="white", font=("Helvetica", 16, "bold"), relief="raised", bd=2)
-            msg_label.place(relx=0.5, rely=0.5, anchor="center")
-            
-            def eliminar():
-                msg_label.destroy()
-            
-            self.after(duracion, eliminar)
-
+        # --- Scenario-dependent functions ---
+        
         def verificar_receta():
             
             # Revisar items en mostradores
@@ -286,7 +323,7 @@ class GameFrame(StyledFrame):
                 items_names = sorted([item.name for item in items_en_mostradores])
                 
                 # Revisar cada receta
-                for receta in escenario.recetas:
+                for receta in self.escenario.recetas:
                     receta_items = sorted([ing.name for ing in receta.ingredientes])
                     
                     if items_names == receta_items:
@@ -294,6 +331,11 @@ class GameFrame(StyledFrame):
                         # Si se encuentra una receta, completar el pedido
                         self.puntaje += 25
                         self.puntaje_label.config(text=f"Puntaje: {self.puntaje}")
+                        
+                        if self.puntaje > self.puntaje_max:
+                            self.puntaje_max = self.puntaje
+                            self.puntaje_max_label.config(text=f"Puntaje máximo: {self.puntaje_max}")
+                            
                         mostrar_mensaje(f"¡Pedido entregado!\n+25 pts", 1500, style.colors["correct"])
                         
                         # Remover el pedido
@@ -305,6 +347,10 @@ class GameFrame(StyledFrame):
                         for mostrador in self.mostradores:
                             mostrador.recoger(self.default_item)
                         self.updateMostradores(self.mostradores, self.mostradores_img, self.canvas_fg)
+                        
+                        self.pedidos_completados += 1
+                        
+                        generarPedido()
                         return True
                 
                 return False
@@ -359,6 +405,12 @@ class GameFrame(StyledFrame):
                 self.vidas_label.config(text=f"Vidas: {self.vidas}")
                 mostrar_mensaje("¡Pedido perdido!\n-10 pts", 1500, style.colors["fail"])
                 quitarPedido(list(self.pedidos.keys())[0])
+                
+                
+                if self.vidas > 0:
+                    generarPedido()
+                else:
+                    self.controller.show_frame("ResultsFrame")
 
             # Contador
             def update_timer():
@@ -378,26 +430,82 @@ class GameFrame(StyledFrame):
                         self.vidas_label.config(text=f"Vidas: {self.vidas}")
                         mostrar_mensaje("¡Pedido perdido!\n-10 pts", 1500, style.colors["fail"])
                         quitarPedido(pedido)
+                        generarPedido()
 
             self.pedidos[pedido]['timer_id'] = self.after(1000, update_timer)
-
-        def quitarPedido(pedido):
-            if pedido in self.pedidos:
+        
+        def generarPedido():
+                if self.pedidos_completados >= 3:
+                    self.fase_tiempo = 2
+                    
+                if self.pedidos_completados >= 6:
+                    self.fase_tiempo = 3
+                    
+                if self.pedidos_completados >= 9:
+                    self.fase_tiempo = 4
+                    
+                if self.pedidos_completados >= 12:
+                    self.fase_tiempo = 5
+            
+                # Fase 1: max 60 | min 55 | pedidos 1
+                if self.fase_tiempo == 1:
+                    if len(self.pedidos) < 1:
+                        receta = self.escenario.recetas[random.randint(0, len(self.escenario.recetas)-1)]
+                        nuevoPedido(receta, 55+random.randint(0, 5))
+                        
+                # Fase 2: max 50 | min 45 | pedidos 2
+                if self.fase_tiempo == 2:
+                    if len(self.pedidos) < 2:
+                        receta = self.escenario.recetas[random.randint(0, len(self.escenario.recetas)-1)]
+                        nuevoPedido(receta, 45+random.randint(0, 5))
+                        
+                        if len(self.pedidos) == 1:
+                            receta = self.escenario.recetas[random.randint(0, len(self.escenario.recetas)-1)]
+                            nuevoPedido(receta, 45+random.randint(0, 5))
                 
-                if self.pedidos[pedido]['timer_id']:
-                    self.after_cancel(self.pedidos[pedido]['timer_id'])
+                # Fase 3: max 40 | min 30 pedidos 2
+                if self.fase_tiempo == 3:
+                    if len(self.pedidos) < 2:
+                        receta = self.escenario.recetas[random.randint(0, len(self.escenario.recetas)-1)]
+                        nuevoPedido(receta, 30+random.randint(0, 10))
+                        
+                        if len(self.pedidos) == 1:
+                            receta = self.escenario.recetas[random.randint(0, len(self.escenario.recetas)-1)]
+                            nuevoPedido(receta, 30+random.randint(0, 10))
                 
-                # Eliminar la carta
-                self.pedidos[pedido]['widget'].destroy()
+                # Fase 4: max 30 | min 25 pedidos 3
+                if self.fase_tiempo == 4:
+                    if len(self.pedidos) < 3:
+                        receta = self.escenario.recetas[random.randint(0, len(self.escenario.recetas)-1)]
+                        nuevoPedido(receta, 25+random.randint(0, 5))
+                        
+                        if len(self.pedidos) == 2:
+                            receta = self.escenario.recetas[random.randint(0, len(self.escenario.recetas)-1)]
+                            nuevoPedido(receta, 25+random.randint(0, 5))
+                        
+                        if len(self.pedidos) == 1:
+                            receta = self.escenario.recetas[random.randint(0, len(self.escenario.recetas)-1)]
+                            nuevoPedido(receta, 25+random.randint(0, 5))
                 
-                # Eliminar de la lista
-                del self.pedidos[pedido]
+                # Fase 5: max 20 | min 15 pedidos 3
+                if self.fase_tiempo == 5:
+                    if len(self.pedidos) < 3:
+                        receta = self.escenario.recetas[random.randint(0, len(self.escenario.recetas)-1)]
+                        nuevoPedido(receta, 15+random.randint(0, 5))
+                        
+                        if len(self.pedidos) == 2:
+                            receta = self.escenario.recetas[random.randint(0, len(self.escenario.recetas)-1)]
+                            nuevoPedido(receta, 15+random.randint(0, 5))
+                        
+                        if len(self.pedidos) == 1:
+                            receta = self.escenario.recetas[random.randint(0, len(self.escenario.recetas)-1)]
+                            nuevoPedido(receta, 15+random.randint(0, 5))
 
         def mover(event):
             key = event.keysym
             
             if key == "Escape":
-                root.destroy()
+                self.root.destroy()
                 
             if key == "p":
                 if self.debug == False:
@@ -407,15 +515,15 @@ class GameFrame(StyledFrame):
                     self.canvas_fg.place(relx=0.5, rely=0.5, anchor="center")
                     self.debug = False
             
-            if key in controller.chef1.keySet:
-                chef = controller.chef1
+            if key in self.controller.chef1.keySet:
+                chef = self.controller.chef1
                 chef_pos = chef1_pos
                 chef_avatar = chef1_avatar
                 chef_cursor = chef1_cursor
                 chef_item = self.chef1_item
             
-            elif key in controller.chef2.keySet:
-                chef = controller.chef2
+            elif key in self.controller.chef2.keySet:
+                chef = self.controller.chef2
                 chef_pos = chef2_pos
                 chef_avatar = chef2_avatar
                 chef_cursor = chef2_cursor
@@ -495,13 +603,13 @@ class GameFrame(StyledFrame):
                                         chef.setItem(self.default_item)
                                         self.showPlayerItem(chef, chef_item, self.canvas_fg)
                                         
-                                        # Check if recipe is completed
+                                        # Revisar si la receta funciona
                                         verificar_receta()
                                             
 
                 # Se interactuó con una caja
                 if act >= 3 and act <= 6:
-                    chef.setItem(escenario.cajas[act-3].item)
+                    chef.setItem(self.escenario.cajas[act-3].item)
                     self.showPlayerItem(chef, chef_item, self.canvas_fg)
                     
                     
@@ -509,11 +617,7 @@ class GameFrame(StyledFrame):
                 # Se interactuó con una estación
                 if act >= 7 and act <= 9:
                     
-                    # Test
-                    if act == 9:
-                        nuevoPedido(escenario.recetas[random.randint(0,len(escenario.recetas)-1)], random.randint(20, 60))
-                    
-                    result = escenario.estaciones[act-7].procesar(chef.item)
+                    result = self.escenario.estaciones[act-7].procesar(chef.item)
                     
                     if result != -1:
                         if result != []:
@@ -523,11 +627,16 @@ class GameFrame(StyledFrame):
                         self.showPlayerItem(chef, chef_item, self.canvas_fg)
                     else:
                         return
-
-        # Vincular las teclas
-        root.bind("<Key>", mover)
         
-        # --- Body ---
+        # --- Initialize game state ---
+        self.vidas_label.config(text=f"Vidas: {self.vidas}")
+        self.puntaje_label.config(text=f"Puntaje: {self.puntaje}")
+        self.puntaje_max_label.config(text=f"Puntaje máximo: {self.puntaje_max}")
+        
+        generarPedido()
+        
+        # Vincular las teclas
+        self.root.bind("<Key>", mover)
         
         
         

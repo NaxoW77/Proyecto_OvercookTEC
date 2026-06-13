@@ -140,7 +140,7 @@ class IntroFrame(StyledFrame):
         self.create_button1(
             btn_group, # Ubicación
             "Jugar", # Texto
-            lambda: controller.show_frame("GameFrame") # Función
+            lambda: iniciar() # Función
             ).pack(side="left", padx=5)
         
         # Botón para ir al salón de la fama
@@ -151,6 +151,10 @@ class IntroFrame(StyledFrame):
             ).pack(side="right", padx=5)
         
         # --- Botones ---
+        
+        def iniciar():
+            controller.escenario = "E1"
+            controller.show_frame("GameFrame")
         
         
         
