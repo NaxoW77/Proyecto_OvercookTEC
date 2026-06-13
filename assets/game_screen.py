@@ -318,14 +318,14 @@ class GameFrame(StyledFrame):
             # Revisar items en mostradores
             items_en_mostradores = [m.item for m in self.mostradores]
             
-            # Revisar que sean diferentes a nada
             if all(item.name != self.default_item.name for item in items_en_mostradores):
                 
-                # Obtener todas las recetas
+                # Obtener los items
                 items_names = sorted([item.name for item in items_en_mostradores])
                 
-                # Revisar cada receta
-                for receta in self.escenario.recetas:
+                # Revisar solo las recetas en pedidos actuales
+                for pedido_id, pedido_data in self.pedidos.items():
+                    receta = pedido_data['receta']
                     receta_items = sorted([ing.name for ing in receta.ingredientes])
                     
                     if items_names == receta_items:
@@ -397,7 +397,8 @@ class GameFrame(StyledFrame):
                 'widget': card,
                 'timer_id': None,
                 'timer_label': timer_label,
-                'time_remaining': timer_seconds
+                'time_remaining': timer_seconds,
+                'receta': receta
             }
             
             if len(self.pedidos) > 3:
@@ -408,7 +409,7 @@ class GameFrame(StyledFrame):
                 mostrar_mensaje("¡Pedido perdido!\n-10 pts", 1500, style.colors["fail"])
                 quitarPedido(list(self.pedidos.keys())[0])
                 
-                if self.vidas <= 0:
+                if self.vidas != 0:
                     generarPedido()
                 else:
                     self.game_over()

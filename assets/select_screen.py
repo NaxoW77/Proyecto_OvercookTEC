@@ -165,7 +165,6 @@ class SelectFrame(StyledFrame):
         def iniciar():
             selected = self.stage_combo.get()
             if selected in [escenario.name for escenario in escenarios.getEscenarios()]:
-                print(escenarios.getEscenario(selected).name)
                 controller.escenario = escenarios.getEscenario(selected)
             else:
                 self.error_txt.config(text="Por favor, selecciona un escenario")
