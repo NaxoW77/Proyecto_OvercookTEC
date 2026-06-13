@@ -17,7 +17,7 @@ from assets.classes import Receta
 class EscenarioList:
     def __init__(self):
         
-        # Primer escenario
+        # Escenario 1
         self.escenario1 = Escenario(
             name = "E1",
             
@@ -154,9 +154,281 @@ class EscenarioList:
             fondo="assets/img/escenario1.png"
         )
         
-        self.escenario2 = Escenario()
         
-        self.escenario3 = Escenario()
+        # Escenario 2
+        self.escenario2 = Escenario(
+            name = "E2",
+            
+            recetas = [
+                Receta(
+            "Hamburguesa con papas",
+            [
+                Item("Pan", 1),
+                Item("Torta de carne", 1),
+                Item("Tajada de queso", 1),
+                Item("Papas fritas", 1)
+            ],
+            "assets/img/hamburguesa.png"
+            ),
+            
+            Receta(
+                "Hamburguesa doble",
+                [
+                    Item("Pan", 1),
+                    Item("Torta de carne", 1),
+                    Item("Torta de carne", 1),
+                    Item("Tajada de queso", 1),
+                ],
+                "assets/img/hamburguesa.png"
+            ),
+            
+            Receta(
+                "Hamburguesa Triple",
+                [
+                    Item("Pan", 1),
+                    Item("Torta de carne", 1),
+                    Item("Torta de carne", 1),
+                    Item("Torta de carne", 1)
+                ],
+                "assets/img/hamburguesa.png"
+            ),
+            
+            Receta(
+                "Hamburguesa con papas y queso",
+                [
+                    Item("Pan", 1),
+                    Item("Torta de carne", 1),
+                    Item("Tajada de queso", 1),
+                    Item("Papas fritas", 1)
+                ],
+                "assets/img/hamburguesa.png"
+            ),
+            
+            Receta(
+                "Papas fritas con queso",
+                [
+                    Item("Papas fritas", 1),
+                    Item("Papas fritas", 1),
+                    Item("Tajada de queso", 1),
+                    Item("Tajada de queso", 1)
+                ],
+                "assets/img/papas.png"
+            )
+            ],
+            
+            # Mapa
+            # Simbología:
+            # 0 = Suelo
+            # 1 = Pared
+            # 2 = Mostrador
+            # 3 = Almacén 1
+            # 4 = Almacén 2
+            # 5 = Almacén 3
+            # 6 = Almacén 4
+            # 7 = Estación 1
+            # 8 = Estación 1
+            # 9 = Estación 2
+    
+            layout = [
+                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                [1, 3, 3, 4, 4, 1, 5, 5, 6, 6, 1],
+                [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
+                [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
+                [1, 9, 0, 0, 0, 1, 0, 0, 0, 9, 1],
+                [1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1],
+                [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
+                [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
+                [1, 7, 7, 7, 0, 1, 0, 8, 8, 8, 1],
+                [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
+                [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
+                [1, 1, 1, 2, 2, 1, 2, 2, 1, 1, 1]
+            ],
+            
+            # Tamaños y posiciones
+            tamaño = 50,
+            posChef1 = [4, 9],
+            posChef2 = [7, 9],
+            
+            # Tipos de estaciones
+            caja3 = Caja("Carnes", Item("Carne cruda", 1, "assets/img/carne_cruda.png")),
+            caja4 = Caja("Papas", Item("Papa", 1, "assets/img/papa_cruda.png")),
+            caja5 = Caja("Panes", Item("Pan", 1, "assets/img/pan.png")),
+            caja6 = Caja("Quesos", Item("Queso", 1, "assets/img/queso.png")),
+            
+            estacion7 = Estacion(
+                "Tabla",
+                "Pica",
+                [
+                    Item("Lechuga", 1, "assets/img/lechuga.png"),
+                    Item("Carne cruda", 1, "assets/img/carne_cruda.png"),
+                    Item("Tomate", 1, "assets/img/tomate.png"),
+                    Item("Queso", 1, "assets/img/queso.png"),
+                    Item("Papa", 1, "assets/img/papa.png")
+                ],
+                [
+                    Item("Lechuga picada", 1, "assets/img/lechuga_picada.png"),
+                    Item("Carne picada", 1, "assets/img/carne_picada.png"),
+                    Item("Tomate picado", 1, "assets/img/tomate_picado.png"),
+                    Item("Tajada de queso", 1, "assets/img/queso_picado.png"),
+                    Item("Papa picada", 1, "assets/img/papa_picada.png")
+                ],
+                "assets/img/tabla.png"),
+            
+            estacion8 = Estacion(
+                "Cocina",
+                "Cocina",
+                [
+                Item("Carne picada", 1, "assets/img/carne_picada.png"),
+                Item("Papa picada", 1, "assets/img/papa_picada.png"),
+                ],
+                [
+                    Item("Torta de carne", 1, "assets/img/carne.png"),
+                    Item("Papas fritas", 1, "assets/img/papas.png")
+                ],
+                "assets/img/cocina.png"),
+            
+            estacion9 = Estacion("Basurero", "Tira", [], [], "assets/img/basurero.png"),
+            
+            fondo="assets/img/escenario1.png"
+        )
+        
+        
+        # Escenario 3
+        self.escenario3 = Escenario(
+            name = "E3",
+            
+            recetas = [
+                Receta(
+            "Hamburguesa con papas",
+            [
+                Item("Pan", 1),
+                Item("Torta de carne", 1),
+                Item("Tajada de queso", 1),
+                Item("Papas fritas", 1)
+            ],
+            "assets/img/hamburguesa.png"
+            ),
+            
+            Receta(
+                "Hamburguesa doble",
+                [
+                    Item("Pan", 1),
+                    Item("Torta de carne", 1),
+                    Item("Torta de carne", 1),
+                    Item("Tajada de queso", 1),
+                ],
+                "assets/img/hamburguesa.png"
+            ),
+            
+            Receta(
+                "Hamburguesa Triple",
+                [
+                    Item("Pan", 1),
+                    Item("Torta de carne", 1),
+                    Item("Torta de carne", 1),
+                    Item("Torta de carne", 1)
+                ],
+                "assets/img/hamburguesa.png"
+            ),
+            
+            Receta(
+                "Hamburguesa con papas y queso",
+                [
+                    Item("Pan", 1),
+                    Item("Torta de carne", 1),
+                    Item("Tajada de queso", 1),
+                    Item("Papas fritas", 1)
+                ],
+                "assets/img/hamburguesa.png"
+            ),
+            
+            Receta(
+                "Papas fritas con queso",
+                [
+                    Item("Papas fritas", 1),
+                    Item("Papas fritas", 1),
+                    Item("Tajada de queso", 1),
+                    Item("Tajada de queso", 1)
+                ],
+                "assets/img/papas.png"
+            )
+            ],
+            
+            # Mapa
+            # Simbología:
+            # 0 = Suelo
+            # 1 = Pared
+            # 2 = Mostrador
+            # 3 = Almacén 1
+            # 4 = Almacén 2
+            # 5 = Almacén 3
+            # 6 = Almacén 4
+            # 7 = Estación 1
+            # 8 = Estación 1
+            # 9 = Estación 2
+    
+            layout = [
+                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                [1, 0, 1, 7, 7, 7, 1, 0, 1, 0, 1, 8, 8, 8, 1, 0, 1],
+                [1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1],
+                [1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1],
+                [1, 5, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 4, 1],
+                [1, 5, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 4, 1],
+                [1, 3, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 6, 1],
+                [1, 3, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 6, 1],
+                [1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1],
+                [1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1],
+                [1, 0, 1, 9, 9, 9, 1, 0, 1, 0, 1, 9, 9, 9, 1, 0, 1],
+                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+            ],
+            
+            # Tamaños y posiciones
+            tamaño = 50,
+            posChef1 = [4, 4],
+            posChef2 = [12, 4],
+            
+            # Tipos de estaciones
+            caja3 = Caja("Carnes", Item("Carne cruda", 1, "assets/img/carne_cruda.png")),
+            caja4 = Caja("Papas", Item("Papa", 1, "assets/img/papa_cruda.png")),
+            caja5 = Caja("Panes", Item("Pan", 1, "assets/img/pan.png")),
+            caja6 = Caja("Quesos", Item("Queso", 1, "assets/img/queso.png")),
+            
+            estacion7 = Estacion(
+                "Tabla",
+                "Pica",
+                [
+                    Item("Lechuga", 1, "assets/img/lechuga.png"),
+                    Item("Carne cruda", 1, "assets/img/carne_cruda.png"),
+                    Item("Tomate", 1, "assets/img/tomate.png"),
+                    Item("Queso", 1, "assets/img/queso.png"),
+                    Item("Papa", 1, "assets/img/papa.png")
+                ],
+                [
+                    Item("Lechuga picada", 1, "assets/img/lechuga_picada.png"),
+                    Item("Carne picada", 1, "assets/img/carne_picada.png"),
+                    Item("Tomate picado", 1, "assets/img/tomate_picado.png"),
+                    Item("Tajada de queso", 1, "assets/img/queso_picado.png"),
+                    Item("Papa picada", 1, "assets/img/papa_picada.png")
+                ],
+                "assets/img/tabla.png"),
+            
+            estacion8 = Estacion(
+                "Cocina",
+                "Cocina",
+                [
+                Item("Carne picada", 1, "assets/img/carne_picada.png"),
+                Item("Papa picada", 1, "assets/img/papa_picada.png"),
+                ],
+                [
+                    Item("Torta de carne", 1, "assets/img/carne.png"),
+                    Item("Papas fritas", 1, "assets/img/papas.png")
+                ],
+                "assets/img/cocina.png"),
+            
+            estacion9 = Estacion("Basurero", "Tira", [], [], "assets/img/basurero.png"),
+            
+            fondo="assets/img/escenario1.png"
+        )
         
         
         # Lista de escenarios para fácil acceso
@@ -176,6 +448,4 @@ class EscenarioList:
         
     # Función getter de la lista
     def getEscenarios(self):
-        return [
-            self.escenario1.name
-            ]
+        return self.list

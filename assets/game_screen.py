@@ -148,7 +148,7 @@ class GameFrame(StyledFrame):
         
     def update_frame(self):
         # Se carga el escenario
-        self.escenario = escenarios.getEscenario(self.controller.escenario)
+        self.escenario = self.controller.escenario
         
         right = self.right
         mostrar_mensaje = self.mostrar_mensaje_func
@@ -586,7 +586,32 @@ class GameFrame(StyledFrame):
                 # Se interactuó con el mostrador
                 if act == 2:
                     for mostrador in self.mostradores:
-                        if mostrador.x == chef.posX and mostrador.y == chef.posY+size:
+                        
+                        # Verificar posiciones
+                        if (
+                            # Abajo
+                            mostrador.x ==chef.posX
+                            and
+                            mostrador.y == chef.posY+size
+                            
+                            ) or (
+                            # Arriba
+                            mostrador.x == chef.posX
+                            and
+                            mostrador.y == chef.posY-size
+                            
+                            ) or (
+                            # Izquierda
+                            mostrador.x == chef.posX-size
+                            and
+                            mostrador.y == chef.posY
+                            
+                            ) or (
+                            # Derecha
+                            mostrador.x == chef.posX+size
+                            and
+                            mostrador.y == chef.posY
+                            ):
                         
                             if chef.item.name == self.default_item.name:
                                 if mostrador.item.name != self.default_item.name:
