@@ -190,7 +190,7 @@ class GameFrame(StyledFrame):
         self.vidas = 5
         
         self.pedidos_completados = 0
-        self.fase_tiempo = 5
+        self.fase_tiempo = 1
         
         self.mostradores = [
             Mostrador("Mostrador 1", self.default_item),
