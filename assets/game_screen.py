@@ -186,12 +186,7 @@ class GameFrame(StyledFrame):
             self.canvas_bg.destroy()
             self.canvas_fg.destroy()
             
-            self.mostradores = [
-                Mostrador("Mostrador 1", self.default_item),
-                Mostrador("Mostrador 2", self.default_item),
-                Mostrador("Mostrador 3", self.default_item),
-                Mostrador("Mostrador 4", self.default_item)
-            ]
+            self.mostradores = []
             self.mostradores_img = []
         
             # Se eliminan los pedidos
@@ -219,12 +214,7 @@ class GameFrame(StyledFrame):
         self.fase_tiempo = 1 # Fase 1
         
         # Se inicializan los mostradores
-        self.mostradores = [
-            Mostrador("Mostrador 1", self.default_item),
-            Mostrador("Mostrador 2", self.default_item),
-            Mostrador("Mostrador 3", self.default_item),
-            Mostrador("Mostrador 4", self.default_item)
-        ]
+        self.mostradores = []
         
         self.mostradores_img = []
 
@@ -289,14 +279,20 @@ class GameFrame(StyledFrame):
                     
                 elif obj == 2: # Mostrador
                     tipo = "green"
-                    block_img = tk.PhotoImage(file="assets/img/plato.png").subsample(5,5)
+                    
+                    # Guardar mostradores simples
+                    if y2 != len(self.escenario.layout)*size:
+                        block_img = tk.PhotoImage(file="assets/img/mostrador.png").subsample(5,5)
+                    else:
+                        # Guardar mostradores de entregas
+                        block_img = tk.PhotoImage(file="assets/img/plato.png").subsample(5,5)
                     
                     # Se guardan las coordenadas
-                    for i in self.mostradores:
-                        if i.x == 0 and i.y == 0:
-                            i.x = x1
-                            i.y = y1
-                            break
+                    self.mostradores.append(Mostrador("Mostrador", self.default_item))
+                    
+                    self.mostradores[-1].x = x1
+                    self.mostradores[-1].y = y1
+                        
                 
                 # Cajas
                 elif obj >= 3 and obj <= 6:
@@ -404,7 +400,10 @@ class GameFrame(StyledFrame):
         def verificar_receta():
             
             # Revisar items en mostradores
-            items_en_mostradores = [m.item for m in self.mostradores]
+            items_en_mostradores = []
+            for m in self.mostradores:
+                if m.y == len(self.escenario.layout)*size-size:
+                    items_en_mostradores.append(m.item)
             
             if all(item.name != self.default_item.name for item in items_en_mostradores):
                 
