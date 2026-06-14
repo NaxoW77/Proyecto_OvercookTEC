@@ -351,7 +351,7 @@ class GameFrame(StyledFrame):
             fill="blue")
 
         # Avatar (Canvas superior)
-        chef1_img = tk.PhotoImage(file="assets/img/chef1.png").subsample(6,6)
+        chef1_img = tk.PhotoImage(file=self.controller.chef1.img).subsample(6,6)
         self.canvas_fg.chef1_img = chef1_img
         chef1_avatar = self.canvas_fg.create_image(self.controller.chef1.posX, self.controller.chef1.posY, anchor="nw", image=chef1_img)
 
@@ -378,7 +378,7 @@ class GameFrame(StyledFrame):
         chef2_pos = self.canvas_bg.create_rectangle(self.controller.chef2.posX, self.controller.chef2.posY, self.controller.chef2.posX + size, self.controller.chef2.posY + size, fill="purple")
         
         # Avatar (Canvas superior)
-        chef2_img = tk.PhotoImage(file="assets/img/chef2.png").subsample(6,6)
+        chef2_img = tk.PhotoImage(file=self.controller.chef2.img).subsample(6,6)
         self.canvas_fg.chef2_img = chef2_img
         chef2_avatar = self.canvas_fg.create_image(self.controller.chef2.posX, self.controller.chef2.posY, anchor="nw", image=chef2_img)
 

@@ -23,8 +23,8 @@ class Main:
     def __init__(self, root):
         
         # Se instancian y configuran los jugadores
-        self.chef1 = Player("Chef1", "", ["w", "s", "a", "d", "e"])
-        self.chef2 = Player("Chef2", "", ["i", "k", "j", "l", "u"])
+        self.chef1 = Player("Chef1", "assets/img/chef1.png", ["w", "s", "a", "d", "e"])
+        self.chef2 = Player("Chef2", "assets/img/chef2.png", ["i", "k", "j", "l", "u"])
         
         # Variables globales
         self.escenario = None

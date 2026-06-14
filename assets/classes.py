@@ -12,9 +12,9 @@ import random as random
 
 # Se define el modelo de jugador
 class Player:
-    def __init__(self, name="", character="", keySet=[]): # Parámetros de inicialización
+    def __init__(self, name="", img="", keySet=[]): # Parámetros de inicialización
         self.name = name if name else "" # Nombre del jugador
-        self.character = character if character else "" # Imagen del jugador
+        self.img = img if img else "" # Imagen del jugador
         self.posX = 0 # Posición en x
         self.posY = 0 # Posición en y
         self.direction = "up" # Dirección
