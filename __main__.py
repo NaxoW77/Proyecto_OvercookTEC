@@ -17,7 +17,7 @@ from assets.select_screen import SelectFrame
 
 # Importar textos
 from assets.lang import Lang
-lang = Lang() # Se trae toda la clase
+lang = Lang() # Se necesita toda la clase
 
 # Importar estilos
 from assets.styles import Style

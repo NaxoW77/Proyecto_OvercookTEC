@@ -11,7 +11,7 @@ from assets.classes import StyledFrame
 
 # Importar textos
 from assets.lang import Lang
-lang = Lang().titleScreen # Se necesita únicamente el diccionario de este frame
+lang = Lang()
 
 # Importar estilos
 from assets.styles import Style

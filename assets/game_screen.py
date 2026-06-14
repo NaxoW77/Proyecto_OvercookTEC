@@ -11,7 +11,7 @@ import random
 
 # Importar textos
 from assets.lang import Lang
-lang = Lang().titleScreen # Se necesita únicamente el diccionario de este frame
+lang = Lang()
 
 # Importar estilos
 from assets.styles import Style
@@ -109,12 +109,12 @@ class GameFrame(StyledFrame):
         self.puntaje_label = tk.Label(floating_frame, text="Puntos: X", bg=style.colors["default"], fg=style.colors["text"], font=("Helvetica", 12))
         self.puntaje_label.pack(pady=(0, 0))
 
-        left_title2 = tk.Label(floating_frame, text="Pedidos", bg=style.colors["default"], fg=style.colors["main"], font=("Helvetica", 14, "bold"))
-        left_title2.pack(pady=(12, 6))
+        left_title2 = tk.Label(floating_frame, text="Pedidos:", bg=style.colors["default"], fg=style.colors["main"], font=("Helvetica", 14, "bold"))
+        left_title2.pack(pady=(12, 2))
 
         # Tabla para los pedidos
         self.table_frame = tk.Frame(floating_frame, bg=style.colors["default"])
-        self.table_frame.pack(padx=10, pady=12, fill="both", expand=True)
+        self.table_frame.pack(padx=10, pady=6, fill="both", expand=True)
 
         
 
@@ -190,7 +190,7 @@ class GameFrame(StyledFrame):
         self.vidas = 5
         
         self.pedidos_completados = 0
-        self.fase_tiempo = 1
+        self.fase_tiempo = 5
         
         self.mostradores = [
             Mostrador("Mostrador 1", self.default_item),
@@ -426,24 +426,24 @@ class GameFrame(StyledFrame):
 
             # Contenido del pedido
             item_content = tk.Frame(card, bg=style.colors["default"])
-            item_content.pack(side="left", padx=6, pady=6, fill="both", expand=True)
+            item_content.pack(side="left", padx=6, pady=3, fill="both", expand=True)
 
             title_frame = tk.Frame(item_content, bg=style.colors["default"])
             title_frame.pack(fill="x", anchor="nw")
 
-            item_title = tk.Label(title_frame, text=receta.name, bg=style.colors["default"], fg=style.colors["text"], font=("Helvetica", 12, "bold"), wraplength=200)
-            item_title.pack(side="left", anchor="nw")
-
-            # Contador
-            timer_label = tk.Label(title_frame, text=f"{timer_seconds}s", bg=style.colors["default"], fg=style.colors["main"], font=("Helvetica", 20, "bold"))
-            timer_label.pack(side="right", padx=(10, 0))
+            item_title = tk.Label(title_frame, text=receta.name, bg=style.colors["default"], fg=style.colors["text"], font=("Helvetica", 10, "bold"), wraplength=200)
+            item_title.pack(side="left", anchor="nw", pady=(0, 0))
 
             item_list = tk.Frame(item_content, bg=style.colors["default"])
             
             for ingrediente in receta.ingredientes:
-                tk.Label(item_list, text=" • "+ingrediente.name, bg=style.colors["default"], fg=style.colors["text"]).pack(anchor="w")
+                tk.Label(item_list, text=" • "+ingrediente.name, bg=style.colors["default"], fg=style.colors["text"], font=("Helvetica", 9)).pack(anchor="w")
             
-            item_list.pack(anchor="nw")
+            item_list.pack(anchor="nw", pady=(0, 5))
+            
+            # Contador
+            timer_label = tk.Label(title_frame, text=f"{timer_seconds}s", bg=style.colors["default"], fg=style.colors["main"], font=("Helvetica", 16, "bold"))
+            timer_label.pack(side="right", padx=(10, 0))
 
             # Propiedades del pedido
             self.pedidos[pedido] = {

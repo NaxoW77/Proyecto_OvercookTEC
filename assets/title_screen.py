@@ -11,7 +11,7 @@ from assets.classes import StyledFrame
 
 # Importar textos
 from assets.lang import Lang
-lang = Lang().titleScreen # Se necesita únicamente el diccionario de este frame
+lang = Lang()
 
 # Importar estilos
 from assets.styles import Style
@@ -66,7 +66,7 @@ class IntroFrame(StyledFrame):
         # Descripción
         self.create_text1(
             left, # Ubicación
-            lang.description, # Texto
+            "OvercookTEC es un juego basado en...", # Texto
             55, # Distanciado en x
             5, # Distanciado en y
             500 # Ancho máximo
@@ -100,13 +100,13 @@ class IntroFrame(StyledFrame):
         # Título
         self.create_title(
             right, 
-            lang.test
+            "Instrucciones:"
             ).pack()
         
         # Instrucciones
         self.create_text2(
             right, # Ubicación
-            "... Las teclas son WASD+E y 8456+9... Las recetas van en los platos...", # Texto
+            "... Las teclas son WASD+E y 8456+9...\n...Las recetas van en los platos...", # Texto
             10, # Distanciado en x
             5, # Distanciado en y
             800, # Ancho máximo
