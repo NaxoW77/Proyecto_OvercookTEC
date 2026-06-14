@@ -33,7 +33,7 @@ class Main:
         
         # Se instancian y configuran los jugadores
         self.chef1 = Player("Chef1", "", ["w", "s", "a", "d", "e"])
-        self.chef2 = Player("Chef2", "", ["8", "5", "4", "6", "9"])
+        self.chef2 = Player("Chef2", "", ["i", "k", "j", "l", "o"])
         
         # Variables globales
         self.escenario = None

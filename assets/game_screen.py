@@ -629,7 +629,7 @@ class GameFrame(StyledFrame):
                 self.root.destroy()
                 
             # Modo debug (Ocultar las texturas)
-            if key == "p":
+            if key == "g":
                 if self.debug == False:
                     self.canvas_fg.place_forget()
                     self.debug = True
