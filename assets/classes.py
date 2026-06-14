@@ -168,37 +168,10 @@ class Player:
             else: # Caso de error
                 return -1
         
-        
-    # --- Setters y getters
-    
-    # Nombre
-    def setName(self, name):
-        self.name = name
-    
-    def getName(self):
-        return self.name
-    
-    # Avatar
-    def setAvatar(self, avatar):
-        self.avatar = avatar
-    
-    def getAvatar(self):
-        return self.avatar
-    
-    # Puntaje
-    def setScore(self, score):
-        self.score = score
-        
-    def getScore(self):
-        return self.score
-    
     # Objetos
     def setItem(self, item):
-        
         self.item = item
         
-    def getItems(self):
-        return self.item
     
 # Se define el modelo de escenario
 class Escenario:
