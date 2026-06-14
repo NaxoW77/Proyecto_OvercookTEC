@@ -7,7 +7,6 @@
 
 # Imports necesarios
 from assets.classes import tk
-from assets.classes import ttk
 
 # Importar secciones
 from assets.title_screen import IntroFrame

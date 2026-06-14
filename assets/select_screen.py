@@ -10,7 +10,7 @@ from assets.classes import ttk
 from assets.classes import StyledFrame
 
 # Importar escenarios
-from assets.data.escenarios import EscenarioList
+from assets.classes import EscenarioList
 escenarios = EscenarioList()
 
 

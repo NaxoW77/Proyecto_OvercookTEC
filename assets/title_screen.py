@@ -6,7 +6,6 @@
 
 # Imports necesarios
 from assets.classes import tk
-from assets.classes import ttk
 from assets.classes import StyledFrame
 
 

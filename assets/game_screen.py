@@ -12,13 +12,12 @@
 
 # Imports necesarios
 from assets.classes import tk
-from assets.classes import ttk
 from assets.classes import StyledFrame
 import random
 
 # Importar escenarios
-from assets.data import escenarios
-escenarios = escenarios.EscenarioList()
+from assets.classes import EscenarioList
+escenarios = EscenarioList()
 
 # Importar clase Item
 from assets.classes import Item
