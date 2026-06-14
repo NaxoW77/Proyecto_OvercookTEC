@@ -16,14 +16,6 @@ from assets.classes import ttk
 from assets.classes import StyledFrame
 import random
 
-# Importar textos
-from assets.lang import Lang
-lang = Lang()
-
-# Importar estilos
-from assets.styles import Style
-style = Style()
-
 # Importar escenarios
 from assets.data import escenarios
 escenarios = escenarios.EscenarioList()
@@ -34,10 +26,12 @@ from assets.classes import Item
 # Importar clase Estacion
 from assets.classes import Mostrador
 
+
+
 # Se define la clase del frame
 class GameFrame(StyledFrame):
     def __init__(self, parent, controller, root):
-        super().__init__(parent, controller, style.colors["default"], root) # Se hereda el controlador
+        super().__init__(parent, controller, "white", root) # Se hereda el controlador
         self.root = root
         
         # --- Variables globales ---
@@ -77,7 +71,7 @@ class GameFrame(StyledFrame):
         
         banner = tk.Frame(
             self,
-            bg=style.colors["game"],
+            bg="#db9a39",
             height=10
             )
         banner.pack(fill="x")
@@ -91,59 +85,59 @@ class GameFrame(StyledFrame):
         # Contenedor principal
         main_frame = tk.Frame(
             self, # Ubicación
-            bg=style.colors["default"] # Color
+            bg="white" # Color
         )
         main_frame.pack(fill="both", expand=True, pady=0)
 
         # --- Body izquierdo ---
-        left = tk.Frame(main_frame, bg=style.colors["game"], width=400)
+        left = tk.Frame(main_frame, bg="#db9a39", width=400)
         left.pack(side="left", fill="y", padx=0)
         left.pack_propagate(False)
 
         # Contenedor
-        left_container = tk.Frame(left, bg=style.colors["default"], bd=2, relief="raised")
+        left_container = tk.Frame(left, bg="white", bd=2, relief="raised")
         left_container.pack(padx=8, pady=12, fill="both", expand=True)
     
         self.card_images = []
 
         # Título
-        self.left_title1 = tk.Label(left_container, text="Escenario X", bg=style.colors["default"], fg=style.colors["main"], font=("Helvetica", 14, "bold"))
+        self.left_title1 = tk.Label(left_container, text="Escenario X", bg="white", fg="#dbd339", font=("Helvetica", 14, "bold"))
         self.left_title1.pack(pady=(12, 6))
         
         # Indicador de vidas
-        self.vidas_label = tk.Label(left_container, text="Vidas: X", bg=style.colors["default"], fg=style.colors["text"], font=("Helvetica", 12))
+        self.vidas_label = tk.Label(left_container, text="Vidas: X", bg="white", fg="#333333", font=("Helvetica", 12))
         self.vidas_label.pack(pady=(0, 12))
         
         # Indicador de pedidos completados
-        self.pedidos_label = tk.Label(left_container, text="Pedidos completados: X", bg=style.colors["default"], fg=style.colors["text"], font=("Helvetica", 12))
+        self.pedidos_label = tk.Label(left_container, text="Pedidos completados: X", bg="white", fg="#333333", font=("Helvetica", 12))
         self.pedidos_label.pack(pady=(0, 0))
         
         # Indicador de puntaje total
-        self.puntaje_max_label = tk.Label(left_container, text="Puntos totales: X", bg=style.colors["default"], fg=style.colors["text"], font=("Helvetica", 12))
+        self.puntaje_max_label = tk.Label(left_container, text="Puntos totales: X", bg="white", fg="#333333", font=("Helvetica", 12))
         self.puntaje_max_label.pack(pady=(0, 0))
         
         # Indicador de puntaje actual
-        self.puntaje_label = tk.Label(left_container, text="Puntos: X", bg=style.colors["default"], fg=style.colors["text"], font=("Helvetica", 12))
+        self.puntaje_label = tk.Label(left_container, text="Puntos: X", bg="white", fg="#333333", font=("Helvetica", 12))
         self.puntaje_label.pack(pady=(0, 0))
 
         # Subtítulo
-        left_title2 = tk.Label(left_container, text="Pedidos:", bg=style.colors["default"], fg=style.colors["main"], font=("Helvetica", 14, "bold"))
+        left_title2 = tk.Label(left_container, text="Pedidos:", bg="white", fg="#dbd339", font=("Helvetica", 14, "bold"))
         left_title2.pack(pady=(12, 2))
 
         # Tabla para los pedidos
-        self.table_frame = tk.Frame(left_container, bg=style.colors["default"])
+        self.table_frame = tk.Frame(left_container, bg="white")
         self.table_frame.pack(padx=10, pady=6, fill="both", expand=True)
 
         
 
         # --- Body derecho ---
-        right = tk.Frame(main_frame, bg=style.colors["default"])
+        right = tk.Frame(main_frame, bg="white")
         right.pack(side="left", fill="both", expand=True)
         self.right = right # Variable para armar el layout
         
         
         # Función para mostrar mensajes cortos
-        def mostrar_mensaje(mensaje, duracion=2000, color=style.colors["game"]):
+        def mostrar_mensaje(mensaje, duracion=2000, color="#db9a39"):
             msg_label = tk.Label(right, text=mensaje, bg=color, fg="white", font=("Helvetica", 16, "bold"), relief="raised", bd=2)
             msg_label.place(relx=0.5, rely=0.5, anchor="center")
             
@@ -186,7 +180,7 @@ class GameFrame(StyledFrame):
         self.pedidos = {}
         self.tiempo_pedido = 0
         
-        self.func_mostrar_mensaje("¡Has perdido!", 3000, style.colors["fail"])
+        self.func_mostrar_mensaje("¡Has perdido!", 3000, "#db3939")
         
         # Función para limpiar las texturas y variables
         def clear():
@@ -438,7 +432,7 @@ class GameFrame(StyledFrame):
                             self.puntaje_max_label.config(text=f"Puntaje máximo: {self.puntaje_max}")
                         
                         # Mostrar mensaje
-                        mostrar_mensaje(f"¡Pedido entregado!\n+25 pts", 1500, style.colors["correct"])
+                        mostrar_mensaje(f"¡Pedido entregado!\n+25 pts", 1500, "#5cdb39")
                         
                         # Remover el pedido
                         for pedido_id in list(self.pedidos.keys()):
@@ -464,38 +458,38 @@ class GameFrame(StyledFrame):
             self.tiempo_pedido += 1
             
             # Contenedor del pedido
-            card = tk.Frame(self.table_frame, bg=style.colors["default"], bd=2, relief="groove")
+            card = tk.Frame(self.table_frame, bg="white", bd=2, relief="groove")
             card.pack(fill="x", padx=5, pady=5)
 
             # Imagen del pedido
             card_item_img = tk.PhotoImage(file=receta.img).subsample(6,6)
             self.card_images.append(card_item_img)
             
-            img_label = tk.Label(card, image=card_item_img, bg=style.colors["default"])
+            img_label = tk.Label(card, image=card_item_img, bg="white")
             img_label.pack(side="left", padx=6, pady=6)
 
             # Contenido del pedido
-            item_content = tk.Frame(card, bg=style.colors["default"])
+            item_content = tk.Frame(card, bg="white")
             item_content.pack(side="left", padx=6, pady=3, fill="both", expand=True)
 
-            title_frame = tk.Frame(item_content, bg=style.colors["default"])
+            title_frame = tk.Frame(item_content, bg="white")
             title_frame.pack(fill="x", anchor="nw")
 
             # Nombre del pedido
-            item_title = tk.Label(title_frame, text=receta.name, bg=style.colors["default"], fg=style.colors["text"], font=("Helvetica", 10, "bold"), wraplength=200)
+            item_title = tk.Label(title_frame, text=receta.name, bg="white", fg="#333333", font=("Helvetica", 10, "bold"), wraplength=200)
             item_title.pack(side="left", anchor="nw", pady=(0, 0))
 
             # Ingredientes
-            item_list = tk.Frame(item_content, bg=style.colors["default"])
+            item_list = tk.Frame(item_content, bg="white")
             
             # Lista de ingredientes
             for ingrediente in receta.ingredientes:
-                tk.Label(item_list, text=" • "+ingrediente.name, bg=style.colors["default"], fg=style.colors["text"], font=("Helvetica", 9)).pack(anchor="w")
+                tk.Label(item_list, text=" • "+ingrediente.name, bg="white", fg="#333333", font=("Helvetica", 9)).pack(anchor="w")
             
             item_list.pack(anchor="nw", pady=(0, 5))
             
             # Contador
-            timer_label = tk.Label(title_frame, text=f"{timer_seconds}s", bg=style.colors["default"], fg=style.colors["main"], font=("Helvetica", 16, "bold"))
+            timer_label = tk.Label(title_frame, text=f"{timer_seconds}s", bg="white", fg="#dbd339", font=("Helvetica", 16, "bold"))
             timer_label.pack(side="right", padx=(10, 0))
 
             # Propiedades del pedido
@@ -542,7 +536,7 @@ class GameFrame(StyledFrame):
                             return
                         
                         # Mostrar mensaje
-                        mostrar_mensaje("¡Pedido perdido!\n-10 pts", 1500, style.colors["fail"])
+                        mostrar_mensaje("¡Pedido perdido!\n-10 pts", 1500, "#db3939")
 
             # Llamada recursiva
             self.pedidos[pedido]['timer_id'] = self.after(1000, update_timer)

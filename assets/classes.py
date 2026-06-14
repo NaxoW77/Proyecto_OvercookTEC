@@ -10,15 +10,6 @@ import tkinter as tk
 from tkinter import ttk
 import random as random
 
-# Importar textos
-from assets.lang import Lang
-lang = Lang()
-
-# Importar estilos
-from assets.styles import Style
-style = Style()
-
-
 # Se define el modelo de jugador
 class Player:
     def __init__(self, name="", character="", keySet=[]): # Parámetros de inicialización
@@ -325,26 +316,26 @@ class StyledFrame(tk.Frame):
         self.controller = controller # Controlador para llamar variables globales
         
     # Método para crear títulos rápidamente
-    def create_title(self, parent, text, fg=style.colors["black"], bg=style.colors["default"]): # Parámetros
+    def create_title(self, parent, text, fg="black", bg="white"): # Parámetros
         return tk.Label(
             parent, # Ubicación
             text=text, # Texto
             fg=fg, # Color
             bg=bg, # Fondo
-            font=style.A20, # Fuente
+            font=("Arial", 20, "bold"), # Fuente
             padx=0, # Distanciado en x
             pady=3, # Distanciado en y
             )
     
     
     # Método para crear textos grandes rápidamente
-    def create_text1(self, parent, text, padx=0, pady=5, wraplength=800, fg=style.colors["black"], bg=style.colors["default"]): # Parámetros
+    def create_text1(self, parent, text, padx=0, pady=5, wraplength=800, fg="black", bg="white"): # Parámetros
         return tk.Label(
             parent, # Ubicación
             text=text, # Texto
             fg=fg, # Color
             bg=bg, # Fondo
-            font=style.a16, # Fuente
+            font=("Arial", 16), # Fuente
             padx=padx, # Distanciado en x
             pady=pady, # Distanciado en y
             wraplength=wraplength # Ancho máximo
@@ -352,14 +343,14 @@ class StyledFrame(tk.Frame):
 
 
     # Método para crear textos medianos rápidamente
-    def create_text2(self, parent, text, padx=0, pady=5, wraplength=800, justify="left", fg=style.colors["black"], bg=style.colors["default"]): # Parámetros
+    def create_text2(self, parent, text, padx=0, pady=5, wraplength=800, justify="left", fg="black", bg="white"): # Parámetros
         return tk.Label(
             parent, # Ubicación
             text=text, # Texto
             fg=fg, # Color 
             bg=bg, # Fondo
             justify=justify, # Posición del texto
-            font=style.a14, # Fuente
+            font=("Arial", 12), # Fuente
             padx=padx, # Distanciado en x
             pady=pady, # Distanciado en y
             wraplength=wraplength # Ancho máximo
@@ -371,9 +362,9 @@ class StyledFrame(tk.Frame):
         return tk.Button(
             parent, # Ubicación
             text=text, # Texto
-            bg=style.colors["main"], # Fondo
-            fg=style.colors["default"],  # Color
-            font=style.a12, # Fuente
+            bg="#dbd339", # Fondo
+            fg="black",  # Color
+            font=("Arial", 12), # Fuente
             padx=20, # Distanciado en x
             pady=10, # Distanciado en y
             relief="flat", # Diseño

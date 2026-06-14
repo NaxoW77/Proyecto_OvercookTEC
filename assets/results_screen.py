@@ -9,25 +9,18 @@ from assets.classes import tk
 from assets.classes import ttk
 from assets.classes import StyledFrame
 
-# Importar textos
-from assets.lang import Lang
-lang = Lang()
-
-# Importar estilos
-from assets.styles import Style
-style = Style()
 
 
 # Se define la clase del frame
 class ResultsFrame(StyledFrame):
     def __init__(self, parent, controller, root):
-        super().__init__(parent, controller, style.colors["default"], root) # Se hereda el controlador
+        super().__init__(parent, controller, "white", root) # Se hereda el controlador
         
         # --- Banner ---
         
         banner = tk.Frame(
             self,
-            bg=style.colors["game"],
+            bg="#db9a39",
             height=10
             )
         banner.pack(fill="x")
@@ -41,7 +34,7 @@ class ResultsFrame(StyledFrame):
         # Contenedor principal
         body = tk.Frame(
             self,
-            bg=style.colors["default"]
+            bg="white"
             )
         body.pack(pady=20, padx=20)
         
@@ -80,7 +73,7 @@ class ResultsFrame(StyledFrame):
         # Contenedor
         btn_container = tk.Frame(
             self,
-            bg=style.colors["default"]
+            bg="white"
             )
         btn_container.pack(side="bottom", fill="x", pady=20)
         
@@ -88,7 +81,7 @@ class ResultsFrame(StyledFrame):
         btn_group = tk.Frame(
             btn_container,
             width=200,
-            bg=style.colors["default"]
+            bg="white"
             )
         btn_group.pack(side="bottom", padx=5)
         

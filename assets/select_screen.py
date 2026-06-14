@@ -9,29 +9,22 @@ from assets.classes import tk
 from assets.classes import ttk
 from assets.classes import StyledFrame
 
-# Importar textos
-from assets.lang import Lang
-lang = Lang()
-
-# Importar estilos
-from assets.styles import Style
-style = Style()
-
 # Importar escenarios
 from assets.data.escenarios import EscenarioList
 escenarios = EscenarioList()
 
 
+
 # Se define la clase del frame
 class SelectFrame(StyledFrame):
     def __init__(self, parent, controller, root):
-        super().__init__(parent, controller, style.colors["default"], root) # Se hereda el controlador
+        super().__init__(parent, controller, "white", root) # Se hereda el controlador
         
         # --- Banner ---
         
         banner = tk.Frame(
             self,
-            bg=style.colors["game"],
+            bg="#db9a39",
             height=10
             )
         banner.pack(fill="x")
@@ -45,7 +38,7 @@ class SelectFrame(StyledFrame):
         # Contenedor principal
         split_frame = tk.Frame(
             self, # Ubicación
-            bg=style.colors["default"] # Color
+            bg="white" # Color
             )
         split_frame.pack(fill="both", expand=True, pady=20)
         
@@ -57,7 +50,7 @@ class SelectFrame(StyledFrame):
         # Contenedor izquierdo
         left = tk.Frame(
             split_frame,
-            bg=style.colors["default"]
+            bg="white"
             )
         left.grid(row=0, column=0, sticky="nsew")
         
@@ -88,8 +81,8 @@ class SelectFrame(StyledFrame):
         self.error_txt = tk.Label(
             left, # Ubicación
             text="", # Texto
-            fg=style.colors["fail"], # Color
-            bg=style.colors["default"] # Fondo
+            fg="#db3939", # Color
+            bg="white" # Fondo
             )
         
         # -- Body izquierdo | ... --
@@ -100,7 +93,7 @@ class SelectFrame(StyledFrame):
         # Contenedor derecho
         right = tk.Frame(
             split_frame,
-            bg=style.colors["default"]
+            bg="white"
             )
         right.grid(row=0, column=1, sticky="nsew")
         
@@ -130,7 +123,7 @@ class SelectFrame(StyledFrame):
         self.esc_img_label = tk.Label(
             right, # Ubicación
             image=self.esc_img, # Imagen
-            bg=style.colors["default"] # Fondo
+            bg="white" # Fondo
             )
         self.esc_img_label.pack()
 
@@ -145,7 +138,7 @@ class SelectFrame(StyledFrame):
         # Contenedor
         btn_container = tk.Frame(
             self,
-            bg=style.colors["default"]
+            bg="white"
             )
         btn_container.pack(side="bottom", fill="x", pady=20)
         
@@ -153,7 +146,7 @@ class SelectFrame(StyledFrame):
         btn_group = tk.Frame(
             btn_container,
             width=200,
-            bg=style.colors["default"]
+            bg="white"
             )
         btn_group.pack(side="bottom", padx=5)
         
