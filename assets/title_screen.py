@@ -107,7 +107,7 @@ class IntroFrame(StyledFrame):
         self.create_text2(
             right, # Ubicación
             # Favor utilizar \n para saltos de línea
-            "... Las teclas son WASD+E y 8456+9...\n...Las recetas van en los platos...", # Texto
+            "... Las teclas son WASD+E y IJKL+U...\n...Las recetas van en los platos...", # Texto
             10, # Distanciado en x
             5, # Distanciado en y
             800, # Ancho máximo
