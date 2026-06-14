@@ -20,6 +20,7 @@ class EscenarioList:
         # Escenario 1
         self.escenario1 = Escenario(
             name = "E1",
+            desc = "Una vuelta por [], simple.",
             
             recetas = [
                 Receta(
@@ -113,7 +114,7 @@ class EscenarioList:
             
             # Tipos de estaciones
             caja3 = Caja("Carnes", Item("Carne cruda", 1, "assets/img/carne_cruda.png")),
-            caja4 = Caja("Papas", Item("Papa", 1, "assets/img/papa_cruda.png")),
+            caja4 = Caja("Papas", Item("Papa", 1, "assets/img/papa.png")),
             caja5 = Caja("Panes", Item("Pan", 1, "assets/img/pan.png")),
             caja6 = Caja("Quesos", Item("Queso", 1, "assets/img/queso.png")),
             
@@ -158,61 +159,62 @@ class EscenarioList:
         # Escenario 2
         self.escenario2 = Escenario(
             name = "E2",
+            desc = "Por [], hay que dividir tareas",
             
             recetas = [
                 Receta(
-            "Hamburguesa con papas",
+                    "\"Uno con todo\"",
+                    [
+                        Item("Lechuga picada", 1),
+                        Item("Tomate picado", 1),
+                        Item("Tronaditas", 1),
+                        Item("Fresco", 1)
+                    ],
+                    "assets/img/ensalada.png"
+                    ),
+                
+                Receta(
+            "Ensalada con tronaditas",
             [
-                Item("Pan", 1),
-                Item("Torta de carne", 1),
-                Item("Tajada de queso", 1),
-                Item("Papas fritas", 1)
+                Item("Lechuga picada", 1),
+                Item("Lechuga picada", 1),
+                Item("Tomate picado", 1),
+                Item("Tronaditas", 1)
             ],
-            "assets/img/hamburguesa.png"
+            "assets/img/ensalada.png"
             ),
             
             Receta(
-                "Hamburguesa doble",
+                "Ensalada verde",
                 [
-                    Item("Pan", 1),
-                    Item("Torta de carne", 1),
-                    Item("Torta de carne", 1),
-                    Item("Tajada de queso", 1),
+                    Item("Lechuga picada", 1),
+                    Item("Lechuga picada", 1),
+                    Item("Lechuga picada", 1),
+                    Item("Lechuga picada", 1),
                 ],
-                "assets/img/hamburguesa.png"
+                "assets/img/ensalada.png"
             ),
             
             Receta(
-                "Hamburguesa Triple",
+                "Ensalada con tomate",
                 [
-                    Item("Pan", 1),
-                    Item("Torta de carne", 1),
-                    Item("Torta de carne", 1),
-                    Item("Torta de carne", 1)
+                    Item("Lechuga picada", 1),
+                    Item("Lechuga picada", 1),
+                    Item("Tomate picado", 1),
+                    Item("Tomate picado", 1)
                 ],
-                "assets/img/hamburguesa.png"
+                "assets/img/ensalada.png"
             ),
             
             Receta(
-                "Hamburguesa con papas y queso",
+                "Ensalada con fresco",
                 [
-                    Item("Pan", 1),
-                    Item("Torta de carne", 1),
-                    Item("Tajada de queso", 1),
-                    Item("Papas fritas", 1)
+                    Item("Lechuga picada", 1),
+                    Item("Lechuga picada", 1),
+                    Item("Tomate picado", 1),
+                    Item("Fresco", 1)
                 ],
-                "assets/img/hamburguesa.png"
-            ),
-            
-            Receta(
-                "Papas fritas con queso",
-                [
-                    Item("Papas fritas", 1),
-                    Item("Papas fritas", 1),
-                    Item("Tajada de queso", 1),
-                    Item("Tajada de queso", 1)
-                ],
-                "assets/img/papas.png"
+                "assets/img/ensalada.png"
             )
             ],
             
@@ -235,7 +237,7 @@ class EscenarioList:
                 [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
                 [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
                 [1, 9, 0, 0, 0, 1, 0, 0, 0, 9, 1],
-                [1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1],
+                [1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1],
                 [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
                 [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
                 [1, 7, 7, 7, 0, 1, 0, 8, 8, 8, 1],
@@ -250,10 +252,10 @@ class EscenarioList:
             posChef2 = [7, 9],
             
             # Tipos de estaciones
-            caja3 = Caja("Carnes", Item("Carne cruda", 1, "assets/img/carne_cruda.png")),
-            caja4 = Caja("Papas", Item("Papa", 1, "assets/img/papa_cruda.png")),
-            caja5 = Caja("Panes", Item("Pan", 1, "assets/img/pan.png")),
-            caja6 = Caja("Quesos", Item("Queso", 1, "assets/img/queso.png")),
+            caja3 = Caja("Lechugas", Item("Lechuga", 1, "assets/img/lechuga.png")),
+            caja4 = Caja("Tomates", Item("Tomate", 1, "assets/img/tomate.png")),
+            caja5 = Caja("Tronaditas", Item("Tronaditas", 1, "assets/img/tronaditas.png")),
+            caja6 = Caja("Fresco", Item("Fresco", 1, "assets/img/fresco.png")),
             
             estacion7 = Estacion(
                 "Tabla",
@@ -296,6 +298,7 @@ class EscenarioList:
         # Escenario 3
         self.escenario3 = Escenario(
             name = "E3",
+            desc = "Un día normal en [].",
             
             recetas = [
                 Receta(
@@ -389,7 +392,7 @@ class EscenarioList:
             
             # Tipos de estaciones
             caja3 = Caja("Carnes", Item("Carne cruda", 1, "assets/img/carne_cruda.png")),
-            caja4 = Caja("Papas", Item("Papa", 1, "assets/img/papa_cruda.png")),
+            caja4 = Caja("Papas", Item("Papa", 1, "assets/img/papa.png")),
             caja5 = Caja("Panes", Item("Pan", 1, "assets/img/pan.png")),
             caja6 = Caja("Quesos", Item("Queso", 1, "assets/img/queso.png")),
             

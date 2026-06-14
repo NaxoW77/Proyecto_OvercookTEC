@@ -49,10 +49,10 @@ class GameFrame(StyledFrame):
         
         self.puntaje = 0
         self.puntaje_max = 0
-        self.vidas = 1
+        self.vidas = 0
         
         self.pedidos_completados = 0
-        self.fase_tiempo = 1
+        self.fase_tiempo = 0
         
         self.mostradores_img = []
 
@@ -100,6 +100,9 @@ class GameFrame(StyledFrame):
         self.vidas_label = tk.Label(floating_frame, text="Vidas: X", bg=style.colors["default"], fg=style.colors["text"], font=("Helvetica", 12))
         self.vidas_label.pack(pady=(0, 12))
         
+        self.pedidos_label = tk.Label(floating_frame, text="Pedidos completados: X", bg=style.colors["default"], fg=style.colors["text"], font=("Helvetica", 12))
+        self.pedidos_label.pack(pady=(0, 0))
+        
         self.puntaje_max_label = tk.Label(floating_frame, text="Puntos totales: X", bg=style.colors["default"], fg=style.colors["text"], font=("Helvetica", 12))
         self.puntaje_max_label.pack(pady=(0, 0))
         
@@ -146,11 +149,60 @@ class GameFrame(StyledFrame):
         self.quitarPedido_func = quitarPedido
         
     def game_over(self):
-        self.controller.show_frame("ResultsFrame")
+        self.controller.puntaje_max += self.puntaje_max
+        self.controller.pedidos_completados = self.pedidos_completados
+        
+        self.root.unbind("<Key>")
+
+        for pedido in self.pedidos.values():
+            self.after_cancel(pedido['timer_id'])
+
+        self.pedidos = {}
+        self.tiempo_pedido = 0
+        
+        self.mostrar_mensaje_func("¡Has perdido!", 3000, style.colors["fail"])
+        
+        def clear():
+            self.canvas_bg.destroy()
+            self.canvas_fg.destroy()
+            
+            self.mostradores = [
+                Mostrador("Mostrador 1", self.default_item),
+                Mostrador("Mostrador 2", self.default_item),
+                Mostrador("Mostrador 3", self.default_item),
+                Mostrador("Mostrador 4", self.default_item)
+            ]
+            self.mostradores_img = []
+        
+            for x in self.table_frame.winfo_children():
+                x.destroy()
+            
+            self.controller.show_frame("ResultsFrame")
+        
+        self.after(3000, lambda: clear())
         
     def update_frame(self):
         # Se carga el escenario
         self.escenario = self.controller.escenario
+        
+        self.puntaje = 0
+        self.puntaje_max = 0
+        self.vidas = 5
+        
+        self.pedidos_completados = 0
+        self.fase_tiempo = 5
+        
+        self.mostradores = [
+            Mostrador("Mostrador 1", self.default_item),
+            Mostrador("Mostrador 2", self.default_item),
+            Mostrador("Mostrador 3", self.default_item),
+            Mostrador("Mostrador 4", self.default_item)
+        ]
+        
+        self.mostradores_img = []
+
+        self.pedidos = {}
+        self.tiempo_pedido = 0
         
         right = self.right
         mostrar_mensaje = self.mostrar_mensaje_func
@@ -332,7 +384,10 @@ class GameFrame(StyledFrame):
                         
                         # Si se encuentra una receta, completar el pedido
                         self.puntaje += 25
+                        self.pedidos_completados += 1
+                        
                         self.puntaje_label.config(text=f"Puntaje: {self.puntaje}")
+                        self.pedidos_label.config(text=f"Pedidos entregados: {self.pedidos_completados}")
                         
                         if self.puntaje > self.puntaje_max:
                             self.puntaje_max = self.puntaje
@@ -349,8 +404,6 @@ class GameFrame(StyledFrame):
                         for mostrador in self.mostradores:
                             mostrador.recoger(self.default_item)
                         self.updateMostradores(self.mostradores, self.mostradores_img, self.canvas_fg)
-                        
-                        self.pedidos_completados += 1
                         
                         generarPedido()
                         return True
@@ -402,17 +455,7 @@ class GameFrame(StyledFrame):
             }
             
             if len(self.pedidos) > 3:
-                self.puntaje -= 10
-                self.vidas -= 1
-                self.puntaje_label.config(text=f"Puntaje: {self.puntaje}")
-                self.vidas_label.config(text=f"Vidas: {self.vidas}")
-                mostrar_mensaje("¡Pedido perdido!\n-10 pts", 1500, style.colors["fail"])
-                quitarPedido(list(self.pedidos.keys())[0])
-                
-                if self.vidas != 0:
-                    generarPedido()
-                else:
-                    self.game_over()
+                self.game_over()
 
             # Contador
             def update_timer():
@@ -427,12 +470,21 @@ class GameFrame(StyledFrame):
                         
                         # Si se acaba el tiempo
                         self.puntaje -= 10
+                        if self.puntaje < 0:
+                            self.puntaje = 0
                         self.vidas -= 1
                         self.puntaje_label.config(text=f"Puntaje: {self.puntaje}")
                         self.vidas_label.config(text=f"Vidas: {self.vidas}")
-                        mostrar_mensaje("¡Pedido perdido!\n-10 pts", 1500, style.colors["fail"])
+                        
                         quitarPedido(pedido)
-                        generarPedido()
+                
+                        if self.vidas > 0:
+                            generarPedido()
+                        else:
+                            self.game_over()
+                            return
+                        
+                        mostrar_mensaje("¡Pedido perdido!\n-10 pts", 1500, style.colors["fail"])
 
             self.pedidos[pedido]['timer_id'] = self.after(1000, update_timer)
         
@@ -481,11 +533,11 @@ class GameFrame(StyledFrame):
                         receta = self.escenario.recetas[random.randint(0, len(self.escenario.recetas)-1)]
                         nuevoPedido(receta, 25+random.randint(0, 5))
                         
-                        if len(self.pedidos) == 2:
+                        if len(self.pedidos) == 1:
                             receta = self.escenario.recetas[random.randint(0, len(self.escenario.recetas)-1)]
                             nuevoPedido(receta, 25+random.randint(0, 5))
                         
-                        if len(self.pedidos) == 1:
+                        if len(self.pedidos) == 2:
                             receta = self.escenario.recetas[random.randint(0, len(self.escenario.recetas)-1)]
                             nuevoPedido(receta, 25+random.randint(0, 5))
                 
@@ -495,11 +547,11 @@ class GameFrame(StyledFrame):
                         receta = self.escenario.recetas[random.randint(0, len(self.escenario.recetas)-1)]
                         nuevoPedido(receta, 15+random.randint(0, 5))
                         
-                        if len(self.pedidos) == 2:
+                        if len(self.pedidos) == 1:
                             receta = self.escenario.recetas[random.randint(0, len(self.escenario.recetas)-1)]
                             nuevoPedido(receta, 15+random.randint(0, 5))
                         
-                        if len(self.pedidos) == 1:
+                        if len(self.pedidos) == 2:
                             receta = self.escenario.recetas[random.randint(0, len(self.escenario.recetas)-1)]
                             nuevoPedido(receta, 15+random.randint(0, 5))
 
@@ -658,6 +710,7 @@ class GameFrame(StyledFrame):
         # Inicializar el juego
         self.left_title1.config(text=f"Escenario: {self.escenario.name}")
         self.vidas_label.config(text=f"Vidas: {self.vidas}")
+        self.pedidos_label.config(text=f"Pedidos entregados: {self.pedidos_completados}")
         self.puntaje_label.config(text=f"Puntaje: {self.puntaje}")
         self.puntaje_max_label.config(text=f"Puntaje máximo: {self.puntaje_max}")
         

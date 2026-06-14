@@ -39,81 +39,37 @@ class ResultsFrame(StyledFrame):
         # --- Body ---
         
         # Contenedor principal
-        split_frame = tk.Frame(
-            self, # Ubicación
-            bg=style.colors["default"] # Color
-            )
-        split_frame.pack(fill="both", expand=True, pady=20)
-        
-        split_frame.grid_columnconfigure(0, weight=15)
-        split_frame.grid_columnconfigure(1, weight=85)
-
-        # -- Body izquierdo | ... --
-        
-        # Contenedor izquierdo
-        left = tk.Frame(
-            split_frame,
+        body = tk.Frame(
+            self,
             bg=style.colors["default"]
             )
-        left.grid(row=0, column=0, sticky="nsew")
+        body.pack(pady=20, padx=20)
         
         # Título
         self.create_title(
-            left, # Ubicación
-            lang.title # Texto
-            ).pack()
+            body,
+            "Resultados"
+        ).pack()
         
-        # Descripción
+        # Texto
         self.create_text1(
-            left, # Ubicación
-            lang.description, # Texto
-            55, # Distanciado en x
-            5, # Distanciado en y
-            500 # Ancho máximo
-            ).pack(side="top",pady=(0, 20))
+            body,
+            "Resultados de la partida:"
+        ).pack()
         
-        # Imagen del juego real
-        self.demo_img = tk.PhotoImage(
-            master=left, # Ubicación
-            file="assets/img/demo.png", # Ruta de la imagen
-            )
+        # Puntaje
+        self.puntaje_text = self.create_text1(
+            body,
+            f"Puntaje: X"
+        )
+        self.puntaje_text.pack()
         
-        self.demo_img_label = tk.Label(
-            left, # Ubicación
-            image=self.demo_img, # Imagen
-            bg=style.colors["main"] # Fondo
-            )
-        self.demo_img_label.pack(side="top", padx=(0, 0), pady=0)
-        
-        # -- Body izquierdo | ... --
-        
-        
-        # -- ... | Body derecho --
- 
-        # Contenedor derecho
-        right = tk.Frame(
-            split_frame,
-            bg=style.colors["default"]
-            )
-        right.grid(row=0, column=1, sticky="nsew")
-        
-        # Título
-        self.create_title(
-            right, 
-            lang.test
-            ).pack()
-        
-        # Instrucciones
-        self.create_text2(
-            right, # Ubicación
-            lang.test, # Texto
-            10, # Distanciado en x
-            5, # Distanciado en y
-            800, # Ancho máximo
-            "center" # Alineación
-            ).pack()
-
-        # -- ... | Body derecho --
+        # Pedidos entregados
+        self.pedidos_text = self.create_text1(
+            body,
+            f"Pedidos entregados: X"
+        )
+        self.pedidos_text.pack()
         
         # --- Body ---
         
@@ -136,21 +92,18 @@ class ResultsFrame(StyledFrame):
             )
         btn_group.pack(side="bottom", padx=5)
         
-        # Botón de jugar
+        # Botón de volver a jugar
         self.create_button1(
             btn_group, # Ubicación
-            "Jugar", # Texto
-            lambda: controller.show_frame("GameFrame") # Función
+            "Volver a jugar", # Texto
+            lambda: controller.show_frame("SelectFrame") # Función
             ).pack(side="left", padx=5)
         
-        # Botón para ir al salón de la fama
-        self.create_button1(
-            btn_group,
-            lang.test,
-            lambda: controller.show_frame("IntroFrame")
-            ).pack(side="right", padx=5)
-        
         # --- Botones ---
-        
+    
+    
+    def update_frame(self):
+        self.puntaje_text.config(text=f"Puntaje: {self.controller.puntaje_max}")
+        self.pedidos_text.config(text=f"Pedidos entregados: {self.controller.pedidos_completados}")
         
         

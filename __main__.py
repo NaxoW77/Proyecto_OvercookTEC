@@ -37,7 +37,7 @@ class Main:
         
         # Variables globales
         self.escenario = None
-        self.puntaje = 0
+        self.puntaje_max = 0
         self.pedidos_completados = 0
         
         # Configuración general de la ventana

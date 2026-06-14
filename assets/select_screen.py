@@ -103,25 +103,33 @@ class SelectFrame(StyledFrame):
         right.grid(row=0, column=1, sticky="nsew")
         
         # Título
-        self.create_title(
+        self.title_text = self.create_title(
             right, 
-            lang.test
-            ).pack()
+            "Escenario X"
+            )
+        self.title_text.pack()
         
         # Instrucciones
-        self.create_text2(
+        self.desc_text = self.create_text2(
             right, # Ubicación
-            "Aqui van las imagenes de como se ve el escenario y las recetas", # Texto
+            "Descripción X", # Texto
             10, # Distanciado en x
             5, # Distanciado en y
             800, # Ancho máximo
             "center" # Alineación
-            ).pack()
+            )
+        self.desc_text.pack()
 
         self.demo_img = tk.PhotoImage(
             master=left, # Ubicación
             file="assets/img/demo.png", # Ruta de la imagen
             )
+        self.demo_img_label = tk.Label(
+            right, # Ubicación
+            image=self.demo_img, # Imagen
+            bg=style.colors["default"] # Fondo
+            )
+        self.demo_img_label.pack()
 
         # -- ... | Body derecho --
         
@@ -153,13 +161,6 @@ class SelectFrame(StyledFrame):
             lambda: iniciar() # Función
             ).pack(side="left", padx=5)
         
-        # Botón para ir al salón de la fama
-        self.create_button1(
-            btn_group,
-            lang.test,
-            lambda: controller.show_frame("IntroFrame")
-            ).pack(side="right", padx=5)
-        
         # --- Botones ---
         
         def iniciar():
@@ -172,12 +173,28 @@ class SelectFrame(StyledFrame):
                 self.after(3000, lambda: self.hide(self.error_txt))
                 return
             
+            controller.puntaje_max = 0
+            controller.pedidos_completados = 0
             controller.show_frame("GameFrame")
             self.stage_combo.config(state="disabled")
     
     def update_frame(self):
         esc = escenarios.getEscenarios()
         self.stage_combo.config(values=[escenario.name for escenario in esc])
+        self.stage_combo.current(0)
+        self.stage_combo.config(state="readonly")
+        self.stage_combo.bind("<<ComboboxSelected>>", lambda event: self.update_img())
+        self.update_img()
         
+    def update_img(self):
+        self.title_text.config(text=f"Escenario {self.stage_combo.get()}")
+        self.desc_text.config(text=escenarios.getEscenario(self.stage_combo.get()).desc)
+        
+        self.demo_img = tk.PhotoImage(
+            master=self, # Ubicación
+            file=f"assets/img/{self.stage_combo.get()}demo.png", # Ruta de la imagen
+            ).subsample(2,2)
+        
+        self.demo_img_label.config(image=self.demo_img)
         
         

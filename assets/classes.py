@@ -202,7 +202,9 @@ class Player:
 # Se define el modelo de escenario
 class Escenario:
     def __init__( # Parámetros de inicialización
-        self, name="",
+        self,
+        name="",
+        desc = "",
         recetas=[],
         layout=[],
         tamaño=0,
@@ -218,6 +220,7 @@ class Escenario:
         fondo=""):
         
         self.name = name # Nombre del escenario
+        self.desc = desc # Descripción
         self.recetas = recetas # Recetas disponibles
         self.layout = layout # Mapa
         self.tamaño = tamaño # Tamaño visual
