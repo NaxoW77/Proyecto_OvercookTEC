@@ -31,7 +31,7 @@ from assets.classes import Player
 class Main:
     def __init__(self, root):
         
-        # Se instancian los modelos a usar
+        # Se instancian y configuran los jugadores
         self.chef1 = Player("Chef1", "", ["w", "s", "a", "d", "e"])
         self.chef2 = Player("Chef2", "", ["8", "5", "4", "6", "9"])
         
@@ -63,10 +63,10 @@ class Main:
         # Logo
         self.header_logo = tk.PhotoImage(
             master=self.main_header,
-            file="assets/img/logo.png",
-            width=70,
-            height=70
-            )
+            file="assets/img/hamburguesa.png",
+            width=250,
+            height=250
+            ).subsample(4,4)
         
         self.header_img = tk.Label(
             self.main_header,
@@ -128,7 +128,9 @@ class Main:
         self.screens = {}
         for screen in (IntroFrame, SelectFrame, GameFrame, ResultsFrame):
             page_name = screen.__name__ # Se les coloca el nombre de la clase
+            
             screenFrame = screen(parent=self.container, controller=self, root=self.root) # Se pasa el controlador principal a cada frame
+            
             self.screens[page_name] = screenFrame # Se guardan los frames en una lista de fácil acceso
             screenFrame.grid(row=0, column=0, sticky="nsew")
 

@@ -96,12 +96,12 @@ class ResultsFrame(StyledFrame):
         self.create_button1(
             btn_group, # Ubicación
             "Volver a jugar", # Texto
-            lambda: controller.show_frame("SelectFrame") # Función
+            lambda: controller.show_frame("SelectFrame") # Función para volver a jugar
             ).pack(side="left", padx=5)
         
         # --- Botones ---
     
-    
+    # Función para actualizar el frame
     def update_frame(self):
         self.puntaje_text.config(text=f"Puntaje: {self.controller.puntaje_max}")
         self.pedidos_text.config(text=f"Pedidos entregados: {self.controller.pedidos_completados}")

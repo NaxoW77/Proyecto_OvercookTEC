@@ -1,7 +1,7 @@
 
 # --- Lista de escenarios ---
 
-# Estas son las recetas predefinidas que
+# Estas son los escenarios predefinidos que
 # se pueden utilizar en el juego
 
 # Importamos las definiciones de cada objeto
@@ -12,70 +12,75 @@ from assets.classes import Item
 from assets.classes import Receta
 
 
-# Creamos una clase que contenga todas las recetas
-
+# Creamos una clase que contenga todos los escenarios
 class EscenarioList:
     def __init__(self):
         
         # Escenario 1
         self.escenario1 = Escenario(
-            name = "E1",
-            desc = "Una vuelta por [], simple.",
+            name = "E1", # Nombre del escenario
+            desc = "Una vuelta por [], simple.", # Descripción del escenario
             
-            recetas = [
+            recetas = [ # Lista de recetas posibles
+                       
+                # Receta 1
                 Receta(
-            "Hamburguesa con papas",
-            [
+            "Hamburguesa con papas", # Nombre de la receta
+            [ # Lista de ingredientes
                 Item("Pan", 1),
                 Item("Torta de carne", 1),
                 Item("Tajada de queso", 1),
                 Item("Papas fritas", 1)
             ],
-            "assets/img/hamburguesa.png"
+            "assets/img/hamburguesa.png" # Imagen de la receta
             ),
             
+            # Receta 2
             Receta(
-                "Hamburguesa doble",
-                [
+                "Hamburguesa doble", # Nombre de la receta
+                [ # Lista de ingredientes
                     Item("Pan", 1),
                     Item("Torta de carne", 1),
                     Item("Torta de carne", 1),
                     Item("Tajada de queso", 1),
                 ],
-                "assets/img/hamburguesa.png"
+                "assets/img/hamburguesa.png" # Imagen de la receta
             ),
             
+            # Receta 3
             Receta(
-                "Hamburguesa Triple",
-                [
+                "Hamburguesa Triple", # Nombre de la receta
+                [ # Lista de ingredientes
                     Item("Pan", 1),
                     Item("Torta de carne", 1),
                     Item("Torta de carne", 1),
                     Item("Torta de carne", 1)
                 ],
-                "assets/img/hamburguesa.png"
+                "assets/img/hamburguesa.png" # Imagen de la receta
             ),
             
+            # Receta 4
             Receta(
-                "Hamburguesa con papas y queso",
-                [
+                "Hamburguesa con papas y queso", # Nombre de la receta
+                [ # Lista de ingredientes
                     Item("Pan", 1),
                     Item("Torta de carne", 1),
                     Item("Tajada de queso", 1),
                     Item("Papas fritas", 1)
                 ],
-                "assets/img/hamburguesa.png"
+                "assets/img/hamburguesa.png" # Imagen de la receta
             ),
             
+            # Receta 5
             Receta(
-                "Papas fritas con queso",
-                [
+                "Papas fritas con queso", # Nombre de la receta
+                [ # Lista de ingredientes
                     Item("Papas fritas", 1),
                     Item("Papas fritas", 1),
                     Item("Tajada de queso", 1),
                     Item("Tajada de queso", 1)
                 ],
-                "assets/img/papas.png"
+                "assets/img/papas.png" # Imagen de la receta
             )
             ],
             
@@ -91,6 +96,8 @@ class EscenarioList:
             # 7 = Estación 1
             # 8 = Estación 1
             # 9 = Estación 2
+            
+            # Tip: Desde VSCode se puede colocar el cursor sobre un número para ver sus coincidencias e imaginar cómo se vería
     
             layout = [
                 [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
@@ -107,52 +114,58 @@ class EscenarioList:
                 [1, 1, 1, 1, 2, 2, 2, 2, 1, 1, 1, 1]
             ],
             
-            # Tamaños y posiciones
+            # Tamaño
+            # ---No modificar---
             tamaño = 50,
-            posChef1 = [4, 9],
-            posChef2 = [7, 9],
             
-            # Tipos de estaciones
+            # Posiciones iniciales
+            posChef1 = [4, 9], # Posición inicial chef1
+            posChef2 = [7, 9], # Posición inicial chef2
+            
+            # Tipos de cajas
             caja3 = Caja("Carnes", Item("Carne cruda", 1, "assets/img/carne_cruda.png")),
             caja4 = Caja("Papas", Item("Papa", 1, "assets/img/papa.png")),
             caja5 = Caja("Panes", Item("Pan", 1, "assets/img/pan.png")),
             caja6 = Caja("Quesos", Item("Queso", 1, "assets/img/queso.png")),
             
+            # Tipos de estaciones
             estacion7 = Estacion(
                 "Tabla",
-                "Pica",
-                [
+                "Pica", # Acción que realiza
+                [ # Items que recibe (el índice coincide)
                     Item("Lechuga", 1, "assets/img/lechuga.png"),
                     Item("Carne cruda", 1, "assets/img/carne_cruda.png"),
                     Item("Tomate", 1, "assets/img/tomate.png"),
                     Item("Queso", 1, "assets/img/queso.png"),
                     Item("Papa", 1, "assets/img/papa.png")
                 ],
-                [
+                [ # Items que devuelve (el índice coincide)
                     Item("Lechuga picada", 1, "assets/img/lechuga_picada.png"),
                     Item("Carne picada", 1, "assets/img/carne_picada.png"),
                     Item("Tomate picado", 1, "assets/img/tomate_picado.png"),
                     Item("Tajada de queso", 1, "assets/img/queso_picado.png"),
                     Item("Papa picada", 1, "assets/img/papa_picada.png")
                 ],
-                "assets/img/tabla.png"),
+                "assets/img/tabla.png"), # Imagen de la estación
             
             estacion8 = Estacion(
                 "Cocina",
-                "Cocina",
-                [
+                "Cocina", # Acción que realiza
+                [ # Items que recibe (el índice coincide)
                 Item("Carne picada", 1, "assets/img/carne_picada.png"),
                 Item("Papa picada", 1, "assets/img/papa_picada.png"),
                 ],
-                [
+                [ # Items que devuelve (el índice coincide)
                     Item("Torta de carne", 1, "assets/img/carne.png"),
                     Item("Papas fritas", 1, "assets/img/papas.png")
                 ],
-                "assets/img/cocina.png"),
+                "assets/img/cocina.png"), # Imagen de la estación
             
+            # Basurero
             estacion9 = Estacion("Basurero", "Tira", [], [], "assets/img/basurero.png"),
             
-            fondo="assets/img/escenario1.png"
+            
+            fondo="assets/img/escenario1.png" # Imagen de fondo
         )
         
         

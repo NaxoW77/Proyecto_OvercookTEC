@@ -1,8 +1,8 @@
 
-# --- Pantalla de inicio ---
+# --- Pantalla de selección ---
 
-# Aquí se muestra una pequeña introducción al juego,
-# una imagen, y las instrucciones para jugar.
+# Aquí se presentan los diferentes niveles
+# y se pide seleccionar uno para continuar.
 
 # Imports necesarios
 from assets.classes import tk
@@ -76,6 +76,7 @@ class SelectFrame(StyledFrame):
             500 # Ancho máximo
             ).pack(side="top",pady=(0, 20))
         
+        # Selector de escenario
         self.stage_combo = ttk.Combobox(
             left, # Ubicación
             values=["Escenario 1", "Escenario 2", "Escenario 3"], # Opciones
@@ -83,6 +84,7 @@ class SelectFrame(StyledFrame):
             )
         self.stage_combo.pack(side="top", padx=55)
         
+        # Texto de error
         self.error_txt = tk.Label(
             left, # Ubicación
             text="", # Texto
@@ -109,7 +111,7 @@ class SelectFrame(StyledFrame):
             )
         self.title_text.pack()
         
-        # Instrucciones
+        # Descripción
         self.desc_text = self.create_text2(
             right, # Ubicación
             "Descripción X", # Texto
@@ -120,16 +122,17 @@ class SelectFrame(StyledFrame):
             )
         self.desc_text.pack()
 
-        self.demo_img = tk.PhotoImage(
+        # Imagen del escenario
+        self.esc_img = tk.PhotoImage(
             master=left, # Ubicación
             file="assets/img/demo.png", # Ruta de la imagen
             )
-        self.demo_img_label = tk.Label(
+        self.esc_img_label = tk.Label(
             right, # Ubicación
-            image=self.demo_img, # Imagen
+            image=self.esc_img, # Imagen
             bg=style.colors["default"] # Fondo
             )
-        self.demo_img_label.pack()
+        self.esc_img_label.pack()
 
         # -- ... | Body derecho --
         
@@ -158,43 +161,55 @@ class SelectFrame(StyledFrame):
         self.create_button1(
             btn_group, # Ubicación
             "Jugar", # Texto
-            lambda: iniciar() # Función
+            lambda: iniciar() # Función para iniciar el juego
             ).pack(side="left", padx=5)
         
         # --- Botones ---
         
+        # Función para iniciar el juego
         def iniciar():
+            # Obtener el escenario seleccionado
             selected = self.stage_combo.get()
             if selected in [escenario.name for escenario in escenarios.getEscenarios()]:
+                # Asignar el escenario al controlador
                 controller.escenario = escenarios.getEscenario(selected)
             else:
+                # Mostrar mensaje de error
                 self.error_txt.config(text="Por favor, selecciona un escenario")
                 self.show(self.error_txt)
                 self.after(3000, lambda: self.hide(self.error_txt))
                 return
             
+            # Asignar el puntaje y los pedidos completados al controlador
             controller.puntaje_max = 0
             controller.pedidos_completados = 0
+            
+            # Mostrar la siguiente sección y bloquear el selector
             controller.show_frame("GameFrame")
             self.stage_combo.config(state="disabled")
     
+    # Función para actualizar el frame
     def update_frame(self):
+        # Lista de escenarios disponibles
         esc = escenarios.getEscenarios()
         self.stage_combo.config(values=[escenario.name for escenario in esc])
         self.stage_combo.current(0)
         self.stage_combo.config(state="readonly")
+        
+        # Función para detectar el escenario seleccionado
         self.stage_combo.bind("<<ComboboxSelected>>", lambda event: self.update_img())
         self.update_img()
         
+    # Función para actualizar la imagen del escenario seleccionado
     def update_img(self):
         self.title_text.config(text=f"Escenario {self.stage_combo.get()}")
         self.desc_text.config(text=escenarios.getEscenario(self.stage_combo.get()).desc)
         
-        self.demo_img = tk.PhotoImage(
+        self.esc_img = tk.PhotoImage(
             master=self, # Ubicación
             file=f"assets/img/{self.stage_combo.get()}demo.png", # Ruta de la imagen
             ).subsample(2,2)
         
-        self.demo_img_label.config(image=self.demo_img)
+        self.esc_img_label.config(image=self.esc_img)
         
         

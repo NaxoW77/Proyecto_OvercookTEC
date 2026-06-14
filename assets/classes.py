@@ -10,8 +10,6 @@ import tkinter as tk
 from tkinter import ttk
 import random as random
 
-from copy import deepcopy
-
 # Importar textos
 from assets.lang import Lang
 lang = Lang()
@@ -29,19 +27,18 @@ class Player:
         self.posX = 0 # Posición en x
         self.posY = 0 # Posición en y
         self.direction = "up" # Dirección
-        self.size = 0
-        self.keySet = keySet
-        
-        self.item = None
+        self.size = 0 # Tamaño del jugador
+        self.keySet = keySet # Teclas
+        self.item = None # Objeto seleccionado
         
     # Método para detectar teclas
     def keyEvent(self, key, canvas):
-        key = key.lower()
+        key = key.lower() # Minúsculas
         
-        if key in self.keySet:
+        if key in self.keySet: # Revisamos las teclas en este jugadpr
             
-            keyIndex = self.keySet.index(key)
-            if keyIndex < len(self.keySet)-1:
+            keyIndex = self.keySet.index(key) # Tecla específica
+            if keyIndex < len(self.keySet)-1: # Teclas de movimiento
                 if keyIndex == 0:
                     key = "w"
                 elif keyIndex == 1:
@@ -50,16 +47,17 @@ class Player:
                     key = "a"
                 elif keyIndex == 3:
                     key = "d"
-                return self.move(key, canvas)
+                return self.move(key, canvas) # Ejecutamos el movimiento
         
             else:
-                if keyIndex == 4:
+                if keyIndex == 4: # Tecla de interacción
                     key = "e"
-                return self.act(key, canvas)
+                return self.act(key, canvas) # Ejecutamos la interacción
         
     # Método para interactuar
     def act(self, key, canvas):
         
+        # Cálculo de coordenadas relativas al movimiento según la dirección
         if self.direction == "up":
             relative_x = self.posX
             relative_y = self.posY - self.size
@@ -76,95 +74,107 @@ class Player:
             relative_x = self.posX + self.size
             relative_y = self.posY
         
+        # Revisamos la casilla en la posición relativa
         return self.checkCasilla(canvas, relative_x+self.size/2, relative_y+self.size/2)
         
-    # Método para moverse
+    # Método para moverse por el canvas
     def move(self, key, canvas):
         dx = 0
         dy = 0
 
+        # Izquierda
         if key == "a":
             relative_x = self.posX - self.size
             relative_y = self.posY
             
             self.direction = "left"
             
+            # Revisamos si hay colisión
             if self.checkCasilla(canvas, relative_x + self.size/2, relative_y + self.size/2) != 0:
-                return [0, 0]
+                return [0, 0] # Si hay colisión, no se mueve
             
             dx = -self.size
             self.posX -= self.size
 
+        # Derecha
         elif key == "d":
             relative_x = self.posX + self.size
             relative_y = self.posY
             
             self.direction = "right"
             
+            # Revisamos si hay colisión
             if self.checkCasilla(canvas, relative_x + self.size/2, relative_y + self.size/2) != 0:
-                return [0, 0]
+                return [0, 0] # Si hay colisión, no se mueve
             
             dx = self.size
             self.posX += self.size
 
+        # Arriba
         elif key == "w":
             relative_x = self.posX
             relative_y = self.posY - self.size
             
             self.direction = "up"
             
+            # Revisamos si hay colisión
             if self.checkCasilla(canvas, relative_x + self.size/2, relative_y + self.size/2) != 0:
-                return [0, 0]
+                return [0, 0] # Si hay colisión, no se mueve
             
             dy = -self.size
             self.posY -= self.size
 
+        # Abajo
         elif key == "s":
             relative_x = self.posX
             relative_y = self.posY + self.size
             
             self.direction = "down"
             
+            # Revisamos si hay colisión
             if self.checkCasilla(canvas, relative_x + self.size/2, relative_y + self.size/2) != 0:
-                return [0, 0]
+                return [0, 0] # Si hay colisión, no se mueve
             
             dy = self.size
             self.posY += self.size
         
         return [dx, dy]
     
-    def checkCasilla(self, canvas, x, y):            
-            item = canvas.find_closest(x, y)
-            if isinstance(item, (tuple, list)):
-                item = item[0]
-        
+    # Método para revisar la casilla y devolver su tipo
+    def checkCasilla(self, canvas, x, y):
+            item = canvas.find_closest(x, y) # Lo buscamos en el canvas
+            if isinstance(item, (tuple, list)): # Si devuelve más de un item
+                item = item[0] # Tomamos el primero
+
+            # Revisamos el color
             fill = canvas.itemcget(item, "fill")
             
-            if fill == "blue":
+            # Devolvemos el tipo
+            if fill == "blue": # Otro jugador
                 return -1
-            elif fill == "purple":
+            elif fill == "purple": # Otro jugador
                 return -1
-            elif fill == "black":
+            elif fill == "black": # Suelo
                 return 0
-            elif fill == "red":
+            elif fill == "red": # Pared
                 return 1
-            elif fill == "green":
+            elif fill == "green": # Mostrador
                 return 2
-            elif fill == "#916223":
+            elif fill == "#916223": # Caja 3
                 return 3
-            elif fill == "#916224":
+            elif fill == "#916224": # Caja 4
                 return 4
-            elif fill == "#916225":
+            elif fill == "#916225": # Caja 5
                 return 5
-            elif fill == "#916226":
+            elif fill == "#916226": # Caja 6
                 return 6
-            elif fill == "#d8d8d7":
+            elif fill == "#d8d8d7": # Estación 7
                 return 7
-            elif fill == "#d8d8d8":
+            elif fill == "#d8d8d8": # Estación 8
                 return 8
-            elif fill == "#d8d8d9":
+            elif fill == "#d8d8d9": # Estación 9
                 return 9
-            else:
+            else: # Caso de error
                 return -1
         
         
@@ -233,8 +243,8 @@ class Escenario:
         self.estacion7 = estacion7 # Estación 7
         self.estacion8 = estacion8 # Estación 8
         self.estacion9 = estacion9 # Estación 9
-        self.cajas = [caja3, caja4, caja5, caja6]
-        self.estaciones = [estacion7, estacion8, estacion9]
+        self.cajas = [caja3, caja4, caja5, caja6] # Cajas
+        self.estaciones = [estacion7, estacion8, estacion9] # Estaciones
         self.fondo = fondo # Imagen del escenario
     
     
@@ -244,9 +254,11 @@ class Caja:
         self.name = name # Nombre de la caja
         self.item = item # Objeto de la caja
         
+    # Método para obtener el item
     def obtener(self):
         return self.item
-        
+
+
 # Clase de Estacion donde se procesan ingredientes
 class Estacion:
     def __init__(self, name="", type="", ingredients=[], results=[], img=""): # Parámetros de inicialización
@@ -256,18 +268,21 @@ class Estacion:
         self.results = results # Resultado de la estacion
         self.img = img # Imagen de la estacion
 
+    # Método para procesar los ingredientes
     def procesar(self, ingrediente):
-        if self.type == "Tira":
+        if self.type == "Tira": # Basurero
             return []
         
-        elif self.type == "Pica" or self.type == "Cocina":
+        elif self.type == "Pica" or self.type == "Cocina": # Tabla o sartén
             
             for i in range(0,len(self.ingredients)):
-                
+                # Buscamos si el ingrediente es procesable
                 if ingrediente.name == self.ingredients[i].name:
-                    return self.results[i]
+                    return self.results[i] # Devolvemos el resultado
             return -1
 
+
+# Clase de Mostrador
 class Mostrador:
     def __init__(self, name="", item=None): # Parámetros de inicialización
         self.name = name # Nombre del mostrador
@@ -275,14 +290,18 @@ class Mostrador:
         self.x = 0 # Posición x
         self.y = 0 # Posición y
         
+    # Método para colocar el item
     def colocar(self, item):
         self.item = item
         
+    # Método para recoger el item
     def recoger(self, item):
         self.item = item
         return self.item
 
-# Se define el modelo de receta
+
+
+# Modelo de Receta
 class Receta:
     def __init__(self, name="", ingredientes={}, img=""): # Parámetros de inicialización
         self.name = name # Nombre de la receta
@@ -290,11 +309,13 @@ class Receta:
         self.img = img # Imagen de la receta
         
 
+# Modelo de Item
 class Item:
     def __init__(self, name="", count=0, img=""): # Parámetros de inicialización
         self.name = name # Nombre del item
         self.count = count # Cantidad del item
-        self.img = img
+        self.img = img # Imagen del item
+
 
 # Se define el modelo de pantalla
 # Este es el modelo que guardará secciones para poder mostrarlas luego
@@ -344,6 +365,7 @@ class StyledFrame(tk.Frame):
             wraplength=wraplength # Ancho máximo
             )
     
+    
     # Método para crear botones
     def create_button1(self, parent, text, command):
         return tk.Button(
@@ -359,7 +381,8 @@ class StyledFrame(tk.Frame):
             command=command # Función
             )
     
-    # Método para actualizar un jugador
+    
+    # Método para actualizar el item de un jugador
     def showPlayerItem(self, chef, chef_item,  canvas):
         item_img = tk.PhotoImage(file=chef.item.img).subsample(8,8)
         if chef.name == "Chef1":
@@ -368,12 +391,13 @@ class StyledFrame(tk.Frame):
             canvas.img2 = item_img
         canvas.itemconfig(chef_item, image=item_img)
         
-    # Método para actualizar los mostradores
+        
+    # Método para actualizar los items de los mostradores
     def updateMostradores(self, mostradores, mostradores_img, canvas):
         for i in range(0,len(mostradores)):
-            
             mostradores_img[i][0] = tk.PhotoImage(file=mostradores[i].item.img).subsample(8,8)
             canvas.itemconfig(mostradores_img[i][1], image=mostradores_img[i][0])
+        
         
     # Método para ocultar un elemento
     def hide(self, elem):
