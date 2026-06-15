@@ -381,7 +381,7 @@ class EscenarioList:
         # Escenario 1
         self.escenario1 = Escenario(
             name = "E1", # Nombre del escenario
-            desc = "Una vuelta por [], simple.", # Descripción del escenario
+            desc = "Prepara platillos en una Soda típica.", # Descripción del escenario
             
             recetas = [ # Lista de recetas posibles
                        
@@ -534,7 +534,7 @@ class EscenarioList:
         # Escenario 2
         self.escenario2 = Escenario(
             name = "E2",
-            desc = "Por [], hay que dividir tareas",
+            desc = "Viaja hasta Limón. Hay que dividir el trabajo",
             
             recetas = [
                 Receta(
@@ -666,14 +666,14 @@ class EscenarioList:
             
             estacion9 = Estacion("Basurero", "Tira", [], [], "assets/img/basurero.png"),
             
-            fondo="assets/img/escenario1.png"
+            fondo="assets/img/escenario2.png"
         )
         
         
         # Escenario 3
         self.escenario3 = Escenario(
             name = "E3",
-            desc = "Un día normal en [].",
+            desc = "El Mercado Central es muy ajetreado. Ambos deben trabajar por separado.",
             
             recetas = [
                 Receta(
@@ -805,7 +805,7 @@ class EscenarioList:
             
             estacion9 = Estacion("Basurero", "Tira", [], [], "assets/img/basurero.png"),
             
-            fondo="assets/img/escenario1.png"
+            fondo="assets/img/escenario3.png"
         )
         
         
