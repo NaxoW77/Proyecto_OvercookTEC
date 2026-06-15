@@ -45,7 +45,8 @@ class IntroFrame(StyledFrame):
         # Contenedor izquierdo
         left = tk.Frame(
             split_frame,
-            bg="white"
+            bg="white",
+            
             )
         left.grid(row=0, column=0, sticky="nsew")
         
@@ -99,11 +100,11 @@ class IntroFrame(StyledFrame):
         self.create_text2(
             right, # Ubicación
             # Favor utilizar \n para saltos de línea
-            "... Las teclas son WASD+E y IJKL+U...\n...Las recetas van en los platos...", # Texto
+                    "Primer jugador:\n- Muevete con W-A-S-D, interactua con E\n\nSegundo jugador:\n- Muevete con I-J-K-L e interactua con U\n\nAl iniciar el juego, tendrán un tiempo limitado establecido para preparar pedidos, Para preparar las recetas, coloquen cada ingrediente en los platos para finalizar el pedido\n\nSi no se entrega un pedido a tiempo se restará el puntaje", # Texto
             10, # Distanciado en x
             5, # Distanciado en y
-            800, # Ancho máximo
-            "center" # Alineación
+            600, # Ancho máximo
+            "left" # Alineación
             ).pack()
 
         # -- ... | Body derecho --
