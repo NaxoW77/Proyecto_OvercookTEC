@@ -426,7 +426,7 @@ class EscenarioList:
         
         # Escenario 1
         self.escenario1 = Escenario(
-            name = "E1", # Nombre del escenario
+            name = "La Soda", # Nombre del escenario
             desc = "Prepara platillos en una Soda típica.", # Descripción del escenario
             
             recetas = [ # Lista de recetas posibles
@@ -579,7 +579,7 @@ class EscenarioList:
         
         # Escenario 2
         self.escenario2 = Escenario(
-            name = "E2",
+            name = "El Puerto",
             desc = "Viaja hasta Limón. Hay que dividir el trabajo",
             
             recetas = [
@@ -718,7 +718,7 @@ class EscenarioList:
         
         # Escenario 3
         self.escenario3 = Escenario(
-            name = "E3",
+            name = "El Mercado Central",
             desc = "El Mercado Central es muy ajetreado. Ambos deben trabajar por separado.",
             
             recetas = [

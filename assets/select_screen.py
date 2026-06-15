@@ -195,7 +195,7 @@ class SelectFrame(StyledFrame):
         
     # Función para actualizar la imagen del escenario seleccionado
     def update_img(self):
-        self.title_text.config(text=f"Escenario {self.stage_combo.get()}")
+        self.title_text.config(text=f"{self.stage_combo.get()}")
         self.desc_text.config(text=escenarios.getEscenario(self.stage_combo.get()).desc)
         
         self.esc_img = tk.PhotoImage(

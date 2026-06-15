@@ -46,9 +46,10 @@ class GameFrame(StyledFrame):
         self.escenario = None
         
         # Variables globales
+        self.tiempo = 0
+        
         self.puntaje = 0
         self.puntaje_max = 0
-        self.vidas = 0
         
         self.pedidos_completados = 0
         self.fase_tiempo = 0 # Dificultad que irá subiendo
@@ -103,9 +104,9 @@ class GameFrame(StyledFrame):
         self.left_title1 = tk.Label(left_container, text="Escenario X", bg="white", fg="#dbd339", font=("Helvetica", 14, "bold"))
         self.left_title1.pack(pady=(12, 6))
         
-        # Indicador de vidas
-        self.vidas_label = tk.Label(left_container, text="Vidas: X", bg="white", fg="#333333", font=("Helvetica", 12))
-        self.vidas_label.pack(pady=(0, 12))
+        # Indicador de tiempo
+        self.tiempo_label = tk.Label(left_container, text="Tiempo: X:XX", bg="white", fg="#333333", font=("Helvetica", 12))
+        self.tiempo_label.pack(pady=(0, 12))
         
         # Indicador de pedidos completados
         self.pedidos_label = tk.Label(left_container, text="Pedidos completados: X", bg="white", fg="#333333", font=("Helvetica", 12))
@@ -175,11 +176,16 @@ class GameFrame(StyledFrame):
 
         for pedido in self.pedidos.values():
             self.after_cancel(pedido['timer_id'])
+            
+        for contador in self.contadores_cocina:
+            self.after_cancel(contador)
+            
+        self.tiempo = -1
 
         self.pedidos = {}
         self.tiempo_pedido = 0
         
-        self.func_mostrar_mensaje("¡Has perdido!", 3000, "#db3939")
+        self.func_mostrar_mensaje("¡Se acabó el juego!", 3000, "#db9539")
         
         # Función para limpiar las texturas y variables
         def clear():
@@ -209,7 +215,7 @@ class GameFrame(StyledFrame):
         self.puntaje_max = 0
         self.pedidos_completados = 0
         
-        self.vidas = 5
+        self.tiempo = 300 # Tiempo de partida
         
         self.fase_tiempo = 1 # Fase 1
         
@@ -223,6 +229,7 @@ class GameFrame(StyledFrame):
         self.pedidos = {}
         self.tiempo_pedido = 0
         
+        # Variables temporales
         right = self.right
         mostrar_mensaje = self.func_mostrar_mensaje
         quitar_pedido = self.func_quitar_pedido
@@ -434,7 +441,9 @@ class GameFrame(StyledFrame):
                     if items_names == receta_items:
                         
                         # Si se encuentra una receta, completar el pedido
-                        self.puntaje += 25
+                        puntaje_calc = ((pedido_data['time_remaining']*100)/60)*0.30 # Fórmula para puntajes hasta 60s
+                        self.puntaje += puntaje_calc
+                        print(pedido_data['time_remaining'])
                         self.pedidos_completados += 1
                         
                         self.puntaje_label.config(text=f"Puntaje: {self.puntaje}")
@@ -446,7 +455,7 @@ class GameFrame(StyledFrame):
                             self.puntaje_max_label.config(text=f"Puntaje máximo: {self.puntaje_max}")
                         
                         # Mostrar mensaje
-                        mostrar_mensaje(f"¡Pedido entregado!\n+25 pts", 1500, "#5cdb39")
+                        mostrar_mensaje(f"¡Pedido entregado!\n+{puntaje_calc} pts", 1500, "#5cdb39")
                         
                         # Remover el pedido
                         for pedido_id in list(self.pedidos.keys()):
@@ -533,19 +542,16 @@ class GameFrame(StyledFrame):
                         
                         # Si se acaba el tiempo
                         self.puntaje -= 10
-                        if self.puntaje < 0:
-                            self.puntaje = 0
-                        self.vidas -= 1
                         self.puntaje_label.config(text=f"Puntaje: {self.puntaje}")
-                        self.vidas_label.config(text=f"Vidas: {self.vidas}")
                         
                         # Remover el pedido
                         quitar_pedido(pedido)
                 
-                        # Revisar si hay vidas
-                        if self.vidas > 0:
+                        # Revisar si se acaba el juego
+                        if self.puntaje >= 0:
                             generar_pedido()
                         else:
+                            self.puntaje_label.config(text=f"Puntaje: 0")
                             self.game_over() # Función para terminar el juego
                             return
                         
@@ -899,6 +905,7 @@ class GameFrame(StyledFrame):
                     # Calcular el item procesado
                     result = self.escenario.estaciones[act-7].procesar(chef.item, self)
                     
+                    
                     # Si el item no es -1 (Hubo proceso)
                     if result != -1:
                         if result != []:
@@ -914,14 +921,32 @@ class GameFrame(StyledFrame):
                         return
         
         # Inicializar la información del juego
-        self.left_title1.config(text=f"Escenario: {self.escenario.name}")
-        self.vidas_label.config(text=f"Vidas: {self.vidas}")
+        self.left_title1.config(text=f"{self.escenario.name}")
+        minutos = self.tiempo/60
+        segundos = self.tiempo%60
+        self.tiempo_label.config(text=f"Tiempo: {minutos}:{segundos}")
         self.pedidos_label.config(text=f"Pedidos entregados: {self.pedidos_completados}")
         self.puntaje_label.config(text=f"Puntaje: {self.puntaje}")
         self.puntaje_max_label.config(text=f"Puntaje máximo: {self.puntaje_max}")
         
         # Generar el primer pedido
         generar_pedido()
+        
+        def tiempo_partida():
+            self.tiempo -= 1
+            minutos = self.tiempo//60
+            segundos = self.tiempo%60
+            if segundos < 10:
+                segundos = f"0{segundos}"
+            self.tiempo_label.config(text=f"Tiempo: {minutos}:{segundos}")
+            if self.tiempo > 0:
+                self.after(1000, tiempo_partida)
+            else:
+                self.tiempo_label.config(text=f"Tiempo: 0:00")
+                self.game_over()
+                
+        
+        tiempo_partida()
         
         # Vincular las teclas
         self.root.bind("<Key>", mover)
