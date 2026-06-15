@@ -23,6 +23,9 @@ escenarios = EscenarioList()
 from assets.classes import Item
 
 # Importar clase Estacion
+from assets.classes import Estacion
+
+# Importar clase Mostrador
 from assets.classes import Mostrador
 
 
@@ -39,14 +42,6 @@ class GameFrame(StyledFrame):
         # Ítem por defecto
         self.default_item = Item("Nada", 1, "assets/img/nada.png")
         
-        # Mostradores
-        self.mostradores = [
-            Mostrador("Mostrador 1", self.default_item),
-            Mostrador("Mostrador 2", self.default_item),
-            Mostrador("Mostrador 3", self.default_item),
-            Mostrador("Mostrador 4", self.default_item)
-        ]
-        
         # Escenario
         self.escenario = None
         
@@ -58,10 +53,15 @@ class GameFrame(StyledFrame):
         self.pedidos_completados = 0
         self.fase_tiempo = 0 # Dificultad que irá subiendo
         
+        self.mostradores = [] # Mostradores
+        self.estaciones = [] # Estaciones
+        self.estaciones_img = [] # Items en estaciones
         self.mostradores_img = [] # Items en mostradores
 
         self.pedidos = {} # Pedidos actuales
         self.tiempo_pedido = 0
+        
+        self.contadores_cocina = []
         
         # Modo Debug (Se puede activar pulsando "p")
         #self.canvas_fg.place_forget()
@@ -213,9 +213,11 @@ class GameFrame(StyledFrame):
         
         self.fase_tiempo = 1 # Fase 1
         
-        # Se inicializan los mostradores
+        # Se inicializan las estaciones y mostradores
+        self.estaciones = []
         self.mostradores = []
         
+        self.estaciones_img = []
         self.mostradores_img = []
 
         self.pedidos = {}
@@ -308,6 +310,8 @@ class GameFrame(StyledFrame):
                         
                     block_img = tk.PhotoImage(file=self.escenario.cajas[obj-3].item.img).subsample(6,6)
                     
+                    
+                    
                 # Estaciones
                 elif obj == 7 or obj == 8 or obj == 9:
                     
@@ -320,6 +324,15 @@ class GameFrame(StyledFrame):
                     
                     block_img = tk.PhotoImage(file=self.escenario.estaciones[obj-7].img).subsample(5,5)
                     
+                    # Se guardan las coordenadas
+                    if obj == 8:
+                        estc = self.escenario.estaciones[obj-7]
+                        self.estaciones.append(Estacion(estc.name, estc.type, estc.ingredients, estc.results, estc.img))
+                        
+                        self.estaciones[-1].item = self.default_item
+                        self.estaciones[-1].x = x1
+                        self.estaciones[-1].y = y1
+                    
                 # Se dibuja el bloque de colisión
                 self.canvas_bg.create_rectangle(x1, y1, x2, y2, outline="black", fill=tipo)
     
@@ -330,12 +343,15 @@ class GameFrame(StyledFrame):
                 self.canvas_fg.images.append(block_img)
                 self.canvas_fg.create_image(x1+size/2, y1+size/2, anchor="center", image=self.canvas_fg.images[-1])
 
+        # Dibujar los items en las estaciones
+        for x in self.estaciones:
+            estacion_img = tk.PhotoImage(file="assets/img/Nada.png").subsample(8,8)
+            self.estaciones_img.append([estacion_img, self.canvas_fg.create_image(x.x+size/7, x.y, image=estacion_img, anchor="nw")])
 
         # Dibujar los items en los mostradores
         for x in self.mostradores:
             mostrador_img = tk.PhotoImage(file="assets/img/nada.png").subsample(8,8)
             self.mostradores_img.append([mostrador_img, self.canvas_fg.create_image(x.x+size/7, x.y, image=mostrador_img, anchor="nw")])
-
 
         # Se dibuja al jugador 1
         self.controller.chef1.posX = self.escenario.posChef1[0] * size
@@ -440,7 +456,7 @@ class GameFrame(StyledFrame):
                         # Limpiar mostradores
                         for mostrador in self.mostradores:
                             mostrador.recoger(self.default_item)
-                        self.updateMostradores(self.mostradores, self.mostradores_img, self.canvas_fg)
+                        self.updateSlots()
                         
                         # Generar nuevo pedido
                         generar_pedido()
@@ -745,7 +761,7 @@ class GameFrame(StyledFrame):
                                     mostrador.recoger(self.default_item)
                                     
                                     # Actualizar texturas
-                                    self.updateMostradores(self.mostradores, self.mostradores_img, self.canvas_fg)
+                                    self.updateSlots()
                                     self.showPlayerItem(chef, chef_item, self.canvas_fg)
                                 
                             # Si el chef tiene un item
@@ -758,7 +774,7 @@ class GameFrame(StyledFrame):
                                         mostrador.colocar(chef.item)
                                         
                                         # Actualizar texturas
-                                        self.updateMostradores(self.mostradores, self.mostradores_img, self.canvas_fg)
+                                        self.updateSlots()
                                         
                                         # Actualizar el chef
                                         chef.setItem(self.default_item)
@@ -779,8 +795,109 @@ class GameFrame(StyledFrame):
                 # Se interactuó con una estación
                 if act >= 7 and act <= 9:
                     
+                    if act == 8:
+                        for estacion in self.estaciones:
+                            
+                            # Verificar posiciones
+                            if (
+                                # Abajo
+                                estacion.x ==chef.posX
+                                and
+                                estacion.y == chef.posY+size
+                                
+                                ) or (
+                                # Arriba
+                                estacion.x == chef.posX
+                                and
+                                estacion.y == chef.posY-size
+                                
+                                ) or (
+                                # Izquierda
+                                estacion.x == chef.posX-size
+                                and
+                                estacion.y == chef.posY
+                                
+                                ) or (
+                                # Derecha
+                                estacion.x == chef.posX+size
+                                and
+                                estacion.y == chef.posY
+                                ):
+                                
+                                if chef.item != self.default_item and estacion.item.name != self.default_item.name:
+                                    return
+                                
+                                # Se calcula el proceso
+                                result = estacion.procesar(chef.item, self)
+                                
+                                # Se actualizan las texturas
+                                self.updateSlots()
+                                
+                                # Si el proceso funcionó y se va a procesar
+                                if result == 1:
+                                    # Se quita el item del chef
+                                    chef.setItem(self.default_item)
+                                    self.showPlayerItem(chef, chef_item, self.canvas_fg)
+                                    
+                                    # Se preparan los callbacks
+                                    def quemar(estacion):
+                                            estacion.cont_cocina.place_forget()
+                                            estacion.item = Item("Quemado", 1, "assets/img/comida_quemada.png")
+                                            self.updateSlots()
+                                    
+                                    def actualiz(estacion):
+                                        self.updateSlots()
+                                        # Después de otros 3s, se quema
+                                        
+                                        if estacion.quemarIntv == None and estacion.item.name != "Nada":
+                                            estacion.quemarIntv =self.after(3000, lambda: quemar(estacion))
+                                
+                                    
+                                    def contar():
+                                        estacion.cont_cocina.config(text=str(int(estacion.cont_cocina.cget("text"))-1))
+                                        if int(estacion.cont_cocina.cget("text")) !=0:
+                                            self.contadores_cocina.append(self.after(1000, contar))
+                                        else:
+                                            estacion.cont_cocina.config(text="!!")
+                                            
+                                    estacion.cont_cocina = tk.Label(self.canvas_fg, text="4", bg="white", fg="black", font=("Arial", 20, "bold"))
+                                    estacion.cont_cocina.place(x=estacion.x+size/4, y=estacion.y-size)
+                                    contar()        
+                                    
+                                    
+                                    # Después de 2.5s, se da el resultado
+                                    if estacion.resultadoIntv == None:
+                                        estacion.resultadoIntv = self.after(3000, lambda: actualiz(estacion))
+                                    
+                                # Si el proceso aún no termina
+                                if result == 0:
+                                    self.showPlayerItem(chef, chef_item, self.canvas_fg)
+                                    return
+                                
+                                # Si el proceso terminó
+                                if isinstance(result, Item):
+                                    # Pasar el item de la estación al chef
+                                    
+                                    if estacion.quemarIntv != None:
+                                        self.after_cancel(estacion.quemarIntv)
+                                        estacion.cont_cocina.place_forget()
+                                        estacion.quemarIntv = None
+                                        
+                                    if estacion.resultadoIntv != None:
+                                        estacion.cont_cocina.place_forget()
+                                        estacion.resultadoIntv = None
+                                        
+                                    chef.setItem(result)
+                                    self.showPlayerItem(chef, chef_item, self.canvas_fg)
+                                    return
+                                return
+                        return
+                            
+                            
+                    # Si la estación no es de cocina:        
+                    
                     # Calcular el item procesado
-                    result = self.escenario.estaciones[act-7].procesar(chef.item)
+                    result = self.escenario.estaciones[act-7].procesar(chef.item, self)
                     
                     # Si el item no es -1 (Hubo proceso)
                     if result != -1:

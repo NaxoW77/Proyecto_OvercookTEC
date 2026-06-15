@@ -231,19 +231,61 @@ class Estacion:
         self.ingredients = ingredients # Ingredientes de la estacion
         self.results = results # Resultado de la estacion
         self.img = img # Imagen de la estacion
+        self.item = None # Objeto de la estacion
+        self.x = 0 # Posición x
+        self.y = 0 # Posición y
+        self.cocinarIntv = None # Tiempo para cocinar
+        self.resultadoIntv = None # Tiempo para obtener el resultado
+        self.quemarIntv = None # Tiempo para quemar
+        self.cont_cocina = None
 
     # Método para procesar los ingredientes
-    def procesar(self, ingrediente):
+    def procesar(self, ingrediente, root):
+        
         if self.type == "Tira": # Basurero
             return []
         
-        elif self.type == "Pica" or self.type == "Cocina": # Tabla o sartén
-            
+        elif self.type == "Pica": # Tabla
             for i in range(0,len(self.ingredients)):
                 # Buscamos si el ingrediente es procesable
                 if ingrediente.name == self.ingredients[i].name:
-                    return self.results[i] # Devolvemos el resultado
+                    self.item = ingrediente
+                    return self.results[i]
             return -1
+        
+        
+        elif self.type == "Cocina": # Cocina
+            
+            if self.item.name == "Nada": # Si no hay un item dentro
+                for i in range(0,len(self.ingredients)):
+                    # Buscamos si el ingrediente es procesable
+                    if ingrediente.name == self.ingredients[i].name:
+                        self.item = ingrediente
+                        
+                        def cocinar(self, i):
+                            self.item = self.results[i]
+                            root.updateSlots()
+                        
+                        if self.cocinarIntv != None:
+                            root.after_cancel(self.cocinarIntv)
+                        
+                        if self.cocinarIntv == None:    
+                            self.cocinarIntv = root.after(3000, lambda: cocinar(self, i))
+                        return 1 # Devolvemos espera
+                
+                return -1 # No se encontró un resultado
+            
+            else:
+                # Si aún se está procesando
+                for ing in self.ingredients:
+                    if ing.name == self.item.name:
+                        return 0 # No se ha procesado aún
+                
+                # Si ya se procesó
+                result = self.item
+                self.item = Item("Nada", 0)
+                self.cocinarIntv = None
+                return result # Devolvemos el item
 
 
 # Clase de Mostrador
@@ -356,11 +398,15 @@ class StyledFrame(tk.Frame):
         canvas.itemconfig(chef_item, image=item_img)
         
         
-    # Método para actualizar los items de los mostradores
-    def updateMostradores(self, mostradores, mostradores_img, canvas):
-        for i in range(0,len(mostradores)):
-            mostradores_img[i][0] = tk.PhotoImage(file=mostradores[i].item.img).subsample(8,8)
-            canvas.itemconfig(mostradores_img[i][1], image=mostradores_img[i][0])
+    # Método para actualizar los items
+    def updateSlots(self):
+        for i in range(0,len(self.estaciones)):
+            self.estaciones_img[i][0] = tk.PhotoImage(file=self.estaciones[i].item.img).subsample(8,8)
+            self.canvas_fg.itemconfig(self.estaciones_img[i][1], image=self.estaciones_img[i][0])
+        
+        for i in range(0,len(self.mostradores)):
+            self.mostradores_img[i][0] = tk.PhotoImage(file=self.mostradores[i].item.img).subsample(8,8)
+            self.canvas_fg.itemconfig(self.mostradores_img[i][1], image=self.mostradores_img[i][0])
         
         
     # Método para ocultar un elemento
@@ -455,9 +501,9 @@ class EscenarioList:
             # 4 = Almacén 2
             # 5 = Almacén 3
             # 6 = Almacén 4
-            # 7 = Estación 1
-            # 8 = Estación 1
-            # 9 = Estación 2
+            # 7 = Estación 7
+            # 8 = Estación 8
+            # 9 = Estación 9
             
             # Tip: Desde VSCode se puede colocar el cursor sobre un número para ver sus coincidencias e imaginar cómo se vería
     
@@ -602,9 +648,9 @@ class EscenarioList:
             # 4 = Almacén 2
             # 5 = Almacén 3
             # 6 = Almacén 4
-            # 7 = Estación 1
-            # 8 = Estación 1
-            # 9 = Estación 2
+            # 7 = Estación 7
+            # 8 = Estación 8
+            # 9 = Estación 9
     
             layout = [
                 [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
@@ -741,9 +787,9 @@ class EscenarioList:
             # 4 = Almacén 2
             # 5 = Almacén 3
             # 6 = Almacén 4
-            # 7 = Estación 1
-            # 8 = Estación 1
-            # 9 = Estación 2
+            # 7 = Estación 7
+            # 8 = Estación 8
+            # 9 = Estación 9
     
             layout = [
                 [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
