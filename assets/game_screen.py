@@ -443,7 +443,6 @@ class GameFrame(StyledFrame):
                         # Si se encuentra una receta, completar el pedido
                         puntaje_calc = ((pedido_data['time_remaining']*100)/60)*0.30 # Fórmula para puntajes hasta 60s
                         self.puntaje += puntaje_calc
-                        print(pedido_data['time_remaining'])
                         self.pedidos_completados += 1
                         
                         self.puntaje_label.config(text=f"Puntaje: {self.puntaje}")
