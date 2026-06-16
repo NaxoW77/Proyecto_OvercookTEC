@@ -59,7 +59,7 @@ class IntroFrame(StyledFrame):
         # Descripción
         self.create_text1(
             left, # Ubicación
-            "OvercookTEC es un juego basado en...", # Texto
+            "OvercookTEC es un juego basado en el juego de cocina cooperativo, Overcooked. En donde se debe trabajar en conjunto para entregar el mayor número de platos en el menor tiempo posible.", # Texto
             55, # Distanciado en x
             5, # Distanciado en y
             500 # Ancho máximo
@@ -100,7 +100,7 @@ class IntroFrame(StyledFrame):
         self.create_text2(
             right, # Ubicación
             # Favor utilizar \n para saltos de línea
-                    "Primer jugador:\n- Muevete con W-A-S-D, interactua con E\n\nSegundo jugador:\n- Muevete con I-J-K-L e interactua con U\n\nAl iniciar el juego, tendrán un tiempo limitado establecido para preparar pedidos, Para preparar las recetas, coloquen cada ingrediente en los platos para finalizar el pedido\n\nSi no se entrega un pedido a tiempo se restará el puntaje", # Texto
+                    "• Primer jugador:\n- Muevete con W-A-S-D, interactua con E\n\n• Segundo jugador:\n- Muevete con I-J-K-L e interactua con U\n\n• Al iniciar el juego, tendrán un tiempo limitado establecido para preparar y entregar pedidos.\n\n• Tomen ingredientes de las cajas, procésenlos en las estaciones y entreguenlos a los platos. \n\n• Cada pedido puntúa según el tiempo de entrega.\n\n• Si no se entrega un pedido a tiempo se restarán puntos.\n\n• El juego termina cuando se termine el tiempo, o se resten muchos puntos.\n\n\n¿Serás capaz de preparar suficientes pedidos? \n\n¡Disfruta!", # Texto
             10, # Distanciado en x
             5, # Distanciado en y
             600, # Ancho máximo
