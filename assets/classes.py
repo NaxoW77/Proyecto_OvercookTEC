@@ -433,62 +433,62 @@ class EscenarioList:
                        
                 # Receta 1
                 Receta(
-            "Hamburguesa con papas", # Nombre de la receta
+            "Empanada de queso", # Nombre de la receta
             [ # Lista de ingredientes
-                Item("Pan", 1),
-                Item("Torta de carne", 1),
+                Item("Tortilla", 1),
+                Item("Tortilla", 1),
                 Item("Tajada de queso", 1),
-                Item("Papas fritas", 1)
+                Item("Tajada de queso", 1)
             ],
-            "assets/img/hamburguesa.png" # Imagen de la receta
+            "assets/img/empanada.png" # Imagen de la receta
             ),
             
             # Receta 2
             Receta(
-                "Hamburguesa doble", # Nombre de la receta
+                "Gallo de salchichón", # Nombre de la receta
                 [ # Lista de ingredientes
-                    Item("Pan", 1),
-                    Item("Torta de carne", 1),
-                    Item("Torta de carne", 1),
-                    Item("Tajada de queso", 1),
+                    Item("Tortilla", 1),
+                    Item("Tortilla", 1),
+                    Item("Salchichón", 1),
+                    Item("Salchichón", 1),
                 ],
-                "assets/img/hamburguesa.png" # Imagen de la receta
+                "assets/img/gallo.png" # Imagen de la receta
             ),
             
             # Receta 3
             Receta(
-                "Hamburguesa Triple", # Nombre de la receta
+                "Gallo \"con todo\"", # Nombre de la receta
                 [ # Lista de ingredientes
-                    Item("Pan", 1),
-                    Item("Torta de carne", 1),
-                    Item("Torta de carne", 1),
-                    Item("Torta de carne", 1)
+                    Item("Tortilla", 1),
+                    Item("Tortilla", 1),
+                    Item("Salchichón", 1),
+                    Item("Tajada de queso", 1)
                 ],
-                "assets/img/hamburguesa.png" # Imagen de la receta
+                "assets/img/gallo.png" # Imagen de la receta
             ),
             
             # Receta 4
             Receta(
-                "Hamburguesa con papas y queso", # Nombre de la receta
+                "Empanada de queso con café", # Nombre de la receta
                 [ # Lista de ingredientes
-                    Item("Pan", 1),
-                    Item("Torta de carne", 1),
+                    Item("Tortilla", 1),
+                    Item("Tortilla", 1),
                     Item("Tajada de queso", 1),
-                    Item("Papas fritas", 1)
+                    Item("Café", 1)
                 ],
-                "assets/img/hamburguesa.png" # Imagen de la receta
+                "assets/img/empanada.png" # Imagen de la receta
             ),
             
             # Receta 5
             Receta(
-                "Papas fritas con queso", # Nombre de la receta
+                "Gallo \"con todo\" con café", # Nombre de la receta
                 [ # Lista de ingredientes
-                    Item("Papas fritas", 1),
-                    Item("Papas fritas", 1),
+                    Item("Tortilla", 1),
+                    Item("Salchichón", 1),
                     Item("Tajada de queso", 1),
-                    Item("Tajada de queso", 1)
+                    Item("Café", 1)
                 ],
-                "assets/img/papas.png" # Imagen de la receta
+                "assets/img/gallo.png" # Imagen de la receta
             )
             ],
             
@@ -531,10 +531,10 @@ class EscenarioList:
             posChef2 = [7, 9], # Posición inicial chef2
             
             # Tipos de cajas
-            caja3 = Caja("Carnes", Item("Carne cruda", 1, "assets/img/carne_cruda.png")),
-            caja4 = Caja("Papas", Item("Papa", 1, "assets/img/papa.png")),
-            caja5 = Caja("Panes", Item("Pan", 1, "assets/img/pan.png")),
-            caja6 = Caja("Quesos", Item("Queso", 1, "assets/img/queso.png")),
+            caja3 = Caja("Salchichones", Item("Salchichón crudo", 1, "assets/img/salchichon_crudo.png")),
+            caja4 = Caja("Tortillas", Item("Tortilla", 1, "assets/img/tortilla.png")),
+            caja5 = Caja("Quesos", Item("Queso", 1, "assets/img/queso.png")),
+            caja6 = Caja("Café", Item("Café", 1, "assets/img/cafe.png")),
             
             # Tipos de estaciones
             estacion7 = Estacion(
@@ -542,14 +542,14 @@ class EscenarioList:
                 "Pica", # Acción que realiza
                 [ # Items que recibe (el índice coincide)
                     Item("Lechuga", 1, "assets/img/lechuga.png"),
-                    Item("Carne cruda", 1, "assets/img/carne_cruda.png"),
+                    Item("Salchichón crudo", 1, "assets/img/salchichon_crudo.png"),
                     Item("Tomate", 1, "assets/img/tomate.png"),
                     Item("Queso", 1, "assets/img/queso.png"),
                     Item("Papa", 1, "assets/img/papa.png")
                 ],
                 [ # Items que devuelve (el índice coincide)
                     Item("Lechuga picada", 1, "assets/img/lechuga_picada.png"),
-                    Item("Carne picada", 1, "assets/img/carne_picada.png"),
+                    Item("Salchichón picado", 1, "assets/img/salchichon_picado.png"),
                     Item("Tomate picado", 1, "assets/img/tomate_picado.png"),
                     Item("Tajada de queso", 1, "assets/img/queso_picado.png"),
                     Item("Papa picada", 1, "assets/img/papa_picada.png")
@@ -560,12 +560,10 @@ class EscenarioList:
                 "Cocina",
                 "Cocina", # Acción que realiza
                 [ # Items que recibe (el índice coincide)
-                Item("Carne picada", 1, "assets/img/carne_picada.png"),
-                Item("Papa picada", 1, "assets/img/papa_picada.png"),
+                Item("Salchichón picado", 1, "assets/img/salchichon_picado.png"),
                 ],
                 [ # Items que devuelve (el índice coincide)
-                    Item("Torta de carne", 1, "assets/img/carne.png"),
-                    Item("Papas fritas", 1, "assets/img/papas.png")
+                    Item("Salchichón", 1, "assets/img/salchichon.png")
                 ],
                 "assets/img/cocina.png"), # Imagen de la estación
             
@@ -584,25 +582,25 @@ class EscenarioList:
             
             recetas = [
                 Receta(
-                    "\"Uno con todo\"",
+                    "Caldosas \"con todo\"",
                     [
                         Item("Lechuga picada", 1),
-                        Item("Tomate picado", 1),
-                        Item("Tronaditas", 1),
+                        Item("Pescado", 1),
+                        Item("Picaritas", 1),
                         Item("Fresco", 1)
                     ],
-                    "assets/img/ensalada.png"
+                    "assets/img/caldosas.png"
                     ),
                 
                 Receta(
-            "Ensalada con tronaditas",
+            "Pescado con ensalada",
             [
+                Item("Pescado", 1),
+                Item("Pescado", 1),
                 Item("Lechuga picada", 1),
-                Item("Lechuga picada", 1),
-                Item("Tomate picado", 1),
-                Item("Tronaditas", 1)
+                Item("Lechuga picada", 1)
             ],
-            "assets/img/ensalada.png"
+            "assets/img/pescado.png"
             ),
             
             Receta(
@@ -617,25 +615,25 @@ class EscenarioList:
             ),
             
             Receta(
-                "Ensalada con tomate",
+                "Caldosas",
                 [
                     Item("Lechuga picada", 1),
-                    Item("Lechuga picada", 1),
-                    Item("Tomate picado", 1),
-                    Item("Tomate picado", 1)
+                    Item("Pescado", 1),
+                    Item("Pescado", 1),
+                    Item("Picaritas", 1)
                 ],
-                "assets/img/ensalada.png"
+                "assets/img/caldosas.png"
             ),
             
             Receta(
-                "Ensalada con fresco",
+                "Pescado con ensalada y fresco",
                 [
+                    Item("Pescado", 1),
                     Item("Lechuga picada", 1),
                     Item("Lechuga picada", 1),
-                    Item("Tomate picado", 1),
                     Item("Fresco", 1)
                 ],
-                "assets/img/ensalada.png"
+                "assets/img/pescado.png"
             )
             ],
             
@@ -674,8 +672,8 @@ class EscenarioList:
             
             # Tipos de estaciones
             caja3 = Caja("Lechugas", Item("Lechuga", 1, "assets/img/lechuga.png")),
-            caja4 = Caja("Tomates", Item("Tomate", 1, "assets/img/tomate.png")),
-            caja5 = Caja("Tronaditas", Item("Tronaditas", 1, "assets/img/tronaditas.png")),
+            caja4 = Caja("Pescados", Item("Pescado crudo", 1, "assets/img/pescado_crudo.png")),
+            caja5 = Caja("Picaritas", Item("Picaritas", 1, "assets/img/picaritas.png")),
             caja6 = Caja("Fresco", Item("Fresco", 1, "assets/img/fresco.png")),
             
             estacion7 = Estacion(
@@ -683,14 +681,14 @@ class EscenarioList:
                 "Pica",
                 [
                     Item("Lechuga", 1, "assets/img/lechuga.png"),
-                    Item("Carne cruda", 1, "assets/img/carne_cruda.png"),
+                    Item("Pescado crudo", 1, "assets/img/pescado_crudo.png"),
                     Item("Tomate", 1, "assets/img/tomate.png"),
                     Item("Queso", 1, "assets/img/queso.png"),
                     Item("Papa", 1, "assets/img/papa.png")
                 ],
                 [
                     Item("Lechuga picada", 1, "assets/img/lechuga_picada.png"),
-                    Item("Carne picada", 1, "assets/img/carne_picada.png"),
+                    Item("Pescado picado", 1, "assets/img/pescado_picado.png"),
                     Item("Tomate picado", 1, "assets/img/tomate_picado.png"),
                     Item("Tajada de queso", 1, "assets/img/queso_picado.png"),
                     Item("Papa picada", 1, "assets/img/papa_picada.png")
@@ -701,11 +699,11 @@ class EscenarioList:
                 "Cocina",
                 "Cocina",
                 [
-                Item("Carne picada", 1, "assets/img/carne_picada.png"),
+                Item("Pescado picado", 1, "assets/img/pescado_picado.png"),
                 Item("Papa picada", 1, "assets/img/papa_picada.png"),
                 ],
                 [
-                    Item("Torta de carne", 1, "assets/img/carne.png"),
+                    Item("Pescado", 1, "assets/img/pescado.png"),
                     Item("Papas fritas", 1, "assets/img/papas.png")
                 ],
                 "assets/img/cocina.png"),
